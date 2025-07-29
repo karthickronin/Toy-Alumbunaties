@@ -1,0 +1,310 @@
+{% extends 'crm/vyzor_base.html' %}
+
+{% block title %}Tasks{% endblock %}
+{% block page_title %}Task Management{% endblock %}
+{% block page_subtitle %}Organize and track your tasks{% endblock %}
+
+{% block header_actions %}
+<a href="#task-modal" class="vz-btn vz-btn-primary modal-trigger" data-bs-toggle="modal" data-bs-target="#task-modal">
+    <i class="fas fa-plus"></i>
+    New Task
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Task Stats -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="vz-metric-card">
+            <div class="vz-metric-header">
+                <h6 class="vz-metric-title">Total Tasks</h6>
+                <div class="vz-metric-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <i class="fas fa-tasks"></i>
+                </div>
+            </div>
+            <h2 class="vz-metric-value">{{ tasks.paginator.count|default:0 }}</h2>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="vz-metric-card">
+            <div class="vz-metric-header">
+                <h6 class="vz-metric-title">Pending</h6>
+                <div class="vz-metric-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </div>
+            <h2 class="vz-metric-value">12</h2>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="vz-metric-card">
+            <div class="vz-metric-header">
+                <h6 class="vz-metric-title">In Progress</h6>
+                <div class="vz-metric-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-spinner"></i>
+                </div>
+            </div>
+            <h2 class="vz-metric-value">8</h2>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="vz-metric-card">
+            <div class="vz-metric-header">
+                <h6 class="vz-metric-title">Urgent</h6>
+                <div class="vz-metric-icon" style="background: linear-gradient(135deg, #ef4444, #b91c1c);">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+            <h2 class="vz-metric-value">3</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filters -->
+<div class="vz-card mb-4">
+    <div class="vz-card-header">
+        <h5 class="vz-card-title">
+            <i class="fas fa-filter"></i>
+            Filter Tasks
+        </h5>
+    </div>
+    <div class="vz-card-body">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <div class="vz-form-group">
+                        <label class="vz-form-label">Status</label>
+                        <select name="status" class="vz-form-control">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="vz-form-group">
+                        <label class="vz-form-label">Priority</label>
+                        <select name="priority" class="vz-form-control">
+                            <option value="">All Priorities</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="vz-form-group">
+                        <label class="vz-form-label">&nbsp;</label>
+                        <button type="submit" class="vz-btn vz-btn-primary w-100">
+                            <i class="fas fa-filter"></i>
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Task List -->
+<div class="row g-4">
+    {% if tasks %}
+        {% for task in tasks %}
+        <div class="col-xl-4 col-md-6">
+            <div class="vz-card task-card">
+                <div class="vz-card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="mb-0">{{ task.title }}</h5>
+                        <span class="vz-badge vz-badge-{% if task.priority == 'urgent' %}danger{% elif task.priority == 'high' %}warning{% elif task.priority == 'medium' %}info{% else %}secondary{% endif %}">
+                            {{ task.get_priority_display }}
+                        </span>
+                    </div>
+                    
+                    {% if task.description %}
+                    <p class="text-muted mb-3">{{ task.description|truncatewords:20 }}</p>
+                    {% endif %}
+                    
+                    {% if task.customer %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="vz-avatar vz-avatar-sm me-2">
+                            {{ task.customer.first_name.0|upper }}{{ task.customer.last_name.0|upper }}
+                        </div>
+                        <div class="text-muted">{{ task.customer.full_name }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="vz-badge vz-badge-{% if task.status == 'completed' %}success{% elif task.status == 'in_progress' %}warning{% else %}info{% endif %}">
+                            {{ task.get_status_display }}
+                        </span>
+                        <div class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ task.due_date|date:"M d, Y" }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted small">
+                            <i class="fas fa-user me-1"></i>
+                            {{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}
+                        </div>
+                        <div>
+                            <a href="#!" class="vz-btn vz-btn-outline btn-sm" onclick="updateTaskStatus({{ task.id }}, 'completed')">
+                                {% if task.status == 'completed' %}
+                                    <i class="fas fa-check-circle"></i> Completed
+                                {% else %}
+                                    <i class="fas fa-check"></i> Complete
+                                {% endif %}
+                            </a>
+                            <a href="#!" class="vz-btn vz-btn-outline btn-sm" onclick="editTask({{ task.id }})">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="vz-card">
+                <div class="vz-card-body">
+                    <div class="text-center py-5">
+                        <i class="fas fa-tasks fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No tasks found</h5>
+                        <p class="text-muted mb-4">Create your first task to get started</p>
+                        <a href="#task-modal" class="vz-btn vz-btn-primary modal-trigger" data-bs-toggle="modal" data-bs-target="#task-modal">
+                            <i class="fas fa-plus"></i>
+                            New Task
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- New Task Modal -->
+<div class="modal fade" id="task-modal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalLabel">
+                    <i class="fas fa-plus-circle me-2"></i>New Task
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    {% csrf_token %}
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="vz-form-group">
+                                <label class="vz-form-label">Task Title *</label>
+                                <div class="vz-input-group">
+                                    <i class="fas fa-tasks vz-input-icon"></i>
+                                    <input id="task_title" name="title" type="text" class="vz-form-control" 
+                                           placeholder="Enter task title" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="vz-form-group">
+                                <label class="vz-form-label">Description</label>
+                                <div class="vz-input-group">
+                                    <i class="fas fa-align-left vz-input-icon"></i>
+                                    <textarea id="task_description" name="description" class="vz-form-control" 
+                                              rows="3" placeholder="Enter task description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="vz-form-group">
+                                <label class="vz-form-label">Priority *</label>
+                                <div class="vz-input-group">
+                                    <i class="fas fa-flag vz-input-icon"></i>
+                                    <select name="priority" class="vz-form-control" required>
+                                        <option value="" disabled selected>Choose Priority</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="vz-form-group">
+                                <label class="vz-form-label">Due Date *</label>
+                                <div class="vz-input-group">
+                                    <i class="fas fa-calendar-alt vz-input-icon"></i>
+                                    <input id="due_date" name="due_date" type="date" class="vz-form-control" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="vz-btn vz-btn-outline" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="button" class="vz-btn vz-btn-primary" onclick="submitTask()">
+                    <i class="fas fa-save"></i>
+                    Create Task
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateTaskStatus(taskId, status) {
+    console.log('Update task status:', taskId, status);
+}
+
+function editTask(taskId) {
+    console.log('Edit task:', taskId);
+}
+
+function submitTask() {
+    console.log('Submit new task');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate task cards on load
+    const taskCards = document.querySelectorAll('.task-card');
+    taskCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Add hover effects to task cards
+    taskCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+            this.style.transition = 'all 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+        });
+    });
+});
+</script>
+{% endblock %}

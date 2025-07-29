@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyzor Login - Toy Alumbunaties CRM</title>
+    
+    <!-- Vyzor CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --vz-primary: #ff6b35;
+            --vz-secondary: #4ecdc4;
+            --vz-success: #10b981;
+            --vz-info: #3b82f6;
+            --vz-warning: #f59e0b;
+            --vz-danger: #ef4444;
+            --vz-light: #f8fafc;
+            --vz-dark: #1e293b;
+            --vz-body-bg: #f1f5f9;
+            --vz-body-color: #64748b;
+            --vz-border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .vz-login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .vz-login-left {
+            flex: 1;
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .vz-login-left::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        
+        .vz-brand-section {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .vz-brand-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            font-size: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .vz-brand-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .vz-brand-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 3rem;
+            line-height: 1.5;
+        }
+        
+        .vz-features-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .vz-features-list li {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .vz-features-list i {
+            width: 24px;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .vz-login-right {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .vz-login-form {
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .vz-login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .vz-login-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--vz-dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .vz-login-description {
+            color: var(--vz-body-color);
+            font-size: 1rem;
+        }
+        
+        .vz-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .vz-form-label {
+            display: block;
+            font-weight: 500;
+            color: var(--vz-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .vz-form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--vz-border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        .vz-form-control:focus {
+            outline: none;
+            border-color: var(--vz-primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        .vz-input-group {
+            position: relative;
+        }
+        
+        .vz-input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vz-body-color);
+            font-size: 1.1rem;
+        }
+        
+        .vz-input-group .vz-form-control {
+            padding-left: 3rem;
+        }
+        
+        .vz-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 10px;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .vz-btn-primary {
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .vz-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+        
+        .vz-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .vz-alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vz-alert i {
+            margin-right: 0.75rem;
+        }
+        
+        .vz-alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--vz-success);
+            color: var(--vz-success);
+        }
+        
+        .vz-alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--vz-danger);
+            color: var(--vz-danger);
+        }
+        
+        .vz-divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: var(--vz-body-color);
+            font-size: 0.875rem;
+        }
+        
+        .vz-divider::before,
+        .vz-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--vz-border-color);
+        }
+        
+        .vz-divider span {
+            padding: 0 1rem;
+        }
+        
+        .vz-footer-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .vz-footer-link a {
+            color: var(--vz-primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .vz-footer-link a:hover {
+            color: var(--vz-secondary);
+        }
+        
+        .vz-footer-link i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .vz-login-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+            
+            .vz-login-left {
+                padding: 2rem;
+                min-height: 300px;
+            }
+            
+            .vz-login-right {
+                padding: 2rem;
+            }
+            
+            .vz-brand-title {
+                font-size: 2rem;
+            }
+            
+            .vz-brand-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+            
+            .vz-features-list {
+                display: none;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .vz-login-container {
+            animation: fadeInUp 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="vz-login-container">
+        <!-- Left Side - Branding -->
+        <div class="vz-login-left">
+            <div class="vz-brand-section">
+                <div class="vz-brand-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <h1 class="vz-brand-title">Toy Alumbunaties</h1>
+                <p class="vz-brand-subtitle">Professional CRM Dashboard for Event Management</p>
+                
+                <ul class="vz-features-list">
+                    <li>
+                        <i class="fas fa-users"></i>
+                        Advanced Customer Management
+                    </li>
+                    <li>
+                        <i class="fas fa-calendar-alt"></i>
+                        Event Booking System
+                    </li>
+                    <li>
+                        <i class="fas fa-chart-line"></i>
+                        Business Analytics & Reports
+                    </li>
+                    <li>
+                        <i class="fas fa-tasks"></i>
+                        Task & Follow-up Management
+                    </li>
+                    <li>
+                        <i class="fas fa-mobile-alt"></i>
+                        Mobile-Responsive Design
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Right Side - Login Form -->
+        <div class="vz-login-right">
+            <div class="vz-login-form">
+                <div class="vz-login-header">
+                    <h2 class="vz-login-title">Welcome Back</h2>
+                    <p class="vz-login-description">Sign in to your CRM dashboard</p>
+                </div>
+                
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="vz-alert vz-alert-{{ message.tags }}">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Login Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="vz-form-group">
+                        <label class="vz-form-label">Username</label>
+                        <div class="vz-input-group">
+                            <i class="fas fa-user vz-input-icon"></i>
+                            <input type="text" name="username" class="vz-form-control" 
+                                   placeholder="Enter your username" required
+                                   value="{{ form.username.value|default:'' }}">
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="vz-form-group">
+                        <label class="vz-form-label">Password</label>
+                        <div class="vz-input-group">
+                            <i class="fas fa-lock vz-input-icon"></i>
+                            <input type="password" name="password" class="vz-form-control" 
+                                   placeholder="Enter your password" required>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="vz-form-group">
+                        <button type="submit" class="vz-btn vz-btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In to Dashboard
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="vz-divider">
+                    <span>or</span>
+                </div>
+                
+                <div class="vz-footer-link">
+                    <a href="{% url 'home' %}">
+                        <i class="fas fa-globe"></i>
+                        Visit Main Website
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-hide messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.vz-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            });
+            
+            // Add focus effects
+            const inputs = document.querySelectorAll('.vz-form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                    this.parentElement.style.transition = 'transform 0.2s ease';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

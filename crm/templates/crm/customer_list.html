@@ -1,0 +1,300 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Customers{% endblock %}
+{% block page_title %}Customers{% endblock %}
+{% block page_subtitle %}Manage your customer database{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'crm:customer_create' %}" class="btn primary-color waves-effect waves-light">
+    <i class="material-icons left">person_add</i>Add Customer
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Search and Filters -->
+<div class="card">
+    <div class="card-content">
+        <span class="card-title">
+            <i class="material-icons left">search</i>Search & Filter
+        </span>
+        <form method="get">
+            <div class="row">
+                <div class="input-field col s12 m4">
+                    <i class="material-icons prefix">search</i>
+                    <input type="text" name="search" id="search" value="{{ search_query|default:'' }}">
+                    <label for="search">Search customers...</label>
+                </div>
+                <div class="input-field col s12 m3">
+                    <select name="status">
+                        <option value="">All Status</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <label>Status</label>
+                </div>
+                <div class="input-field col s12 m3">
+                    <select name="source">
+                        <option value="">All Sources</option>
+                        {% for value, label in source_choices %}
+                            <option value="{{ value }}" {% if source_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <label>Lead Source</label>
+                </div>
+                <div class="col s12 m2">
+                    <button type="submit" class="btn primary-color waves-effect waves-light" style="margin-top: 20px; width: 100%;">
+                        <i class="material-icons left">search</i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Customer List -->
+<div class="card">
+    <div class="card-content">
+        <div class="row valign-wrapper" style="margin-bottom: 16px;">
+            <div class="col s8">
+                <span class="card-title">
+                    <i class="material-icons left">people</i>Customer List
+                    <span class="new badge primary-color" data-badge-caption="total">{{ customers.paginator.count|default:0 }}</span>
+                </span>
+            </div>
+            <div class="col s4 right-align">
+                <a class="dropdown-trigger btn-flat" href="#!" data-target="view-dropdown">
+                    <i class="material-icons left">view_module</i>View<i class="material-icons right">arrow_drop_down</i>
+                </a>
+                <ul id="view-dropdown" class="dropdown-content">
+                    <li><a href="#!" onclick="toggleView('table')"><i class="material-icons">view_list</i>Table View</a></li>
+                    <li><a href="#!" onclick="toggleView('card')"><i class="material-icons">view_module</i>Card View</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        {% if customers %}
+            <!-- Table View -->
+            <div id="table-view" class="data-table">
+                <table class="striped responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Bookings</th>
+                            <th>Revenue</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                        <tr>
+                            <td>
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <div class="avatar-sm">
+                                            {{ customer.first_name.0|upper }}{{ customer.last_name.0|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>{{ customer.full_name }}</strong>
+                                        {% if customer.company %}
+                                            <br><small class="grey-text">{{ customer.company }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>{{ customer.email }}</div>
+                                <small class="grey-text">{{ customer.phone }}</small>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ customer.status }}">
+                                    {{ customer.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="chip">
+                                    {{ customer.get_lead_source_display }}
+                                </span>
+                            </td>
+                            <td class="center-align">
+                                <span class="new badge blue" data-badge-caption="">{{ customer.total_bookings|default:0 }}</span>
+                            </td>
+                            <td>
+                                <strong>₹{{ customer.total_revenue|floatformat:0|default:0 }}</strong>
+                            </td>
+                            <td>
+                                <small>{{ customer.created_at|date:"M d, Y" }}</small>
+                            </td>
+                            <td>
+                                <a href="{% url 'crm:customer_detail' customer.id %}" class="btn-small primary-color waves-effect waves-light" data-tooltip="View Details">
+                                    <i class="material-icons">visibility</i>
+                                </a>
+                                <a href="{% url 'crm:customer_edit' customer.id %}" class="btn-small grey waves-effect waves-light" data-tooltip="Edit">
+                                    <i class="material-icons">edit</i>
+                                </a>
+                                <a href="{% url 'crm:booking_create_for_customer' customer.id %}" class="btn-small green waves-effect waves-light" data-tooltip="New Booking">
+                                    <i class="material-icons">event_available</i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Card View -->
+            <div id="card-view" style="display: none;">
+                <div class="row">
+                    {% for customer in customers %}
+                    <div class="col s12 m6 l4">
+                        <div class="card hoverable">
+                            <div class="card-content">
+                                <div class="row valign-wrapper" style="margin-bottom: 16px;">
+                                    <div class="col s3">
+                                        <div class="avatar">
+                                            {{ customer.first_name.0|upper }}{{ customer.last_name.0|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="col s9">
+                                        <span class="card-title" style="font-size: 1.2rem;">{{ customer.full_name }}</span>
+                                        {% if customer.company %}
+                                            <p class="grey-text" style="margin: 0;">{{ customer.company }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="margin-bottom: 8px;">
+                                    <div class="col s12">
+                                        <i class="material-icons tiny">email</i> {{ customer.email }}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom: 16px;">
+                                    <div class="col s12">
+                                        <i class="material-icons tiny">phone</i> {{ customer.phone }}
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="margin-bottom: 16px;">
+                                    <div class="col s6">
+                                        <span class="status-badge status-{{ customer.status }}">
+                                            {{ customer.get_status_display }}
+                                        </span>
+                                    </div>
+                                    <div class="col s6 right-align">
+                                        <span class="chip">{{ customer.get_lead_source_display }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" style="margin-bottom: 0;">
+                                    <div class="col s6">
+                                        <small class="grey-text">Bookings: {{ customer.total_bookings|default:0 }}</small>
+                                    </div>
+                                    <div class="col s6 right-align">
+                                        <small class="grey-text">₹{{ customer.total_revenue|floatformat:0|default:0 }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <a href="{% url 'crm:customer_detail' customer.id %}" class="primary-text">View Details</a>
+                                <a href="{% url 'crm:customer_edit' customer.id %}" class="grey-text">Edit</a>
+                                <a href="{% url 'crm:booking_create_for_customer' customer.id %}" class="green-text">New Booking</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="material-icons">people_outline</i>
+                <h5>No customers found</h5>
+                <p>
+                    {% if search_query %}
+                        Try adjusting your search criteria
+                    {% else %}
+                        Start by adding your first customer
+                    {% endif %}
+                </p>
+                <a href="{% url 'crm:customer_create' %}" class="btn-large primary-color waves-effect waves-light">
+                    <i class="material-icons left">person_add</i>Add Customer
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if customers.has_other_pages %}
+<div class="center-align">
+    <ul class="pagination">
+        {% if customers.has_previous %}
+            <li class="waves-effect">
+                <a href="?page={{ customers.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if source_filter %}&source={{ source_filter }}{% endif %}">
+                    <i class="material-icons">chevron_left</i>
+                </a>
+            </li>
+        {% endif %}
+        
+        {% for num in customers.paginator.page_range %}
+            {% if customers.number == num %}
+                <li class="active primary-color">
+                    <span>{{ num }}</span>
+                </li>
+            {% elif num > customers.number|add:'-3' and num < customers.number|add:'3' %}
+                <li class="waves-effect">
+                    <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if source_filter %}&source={{ source_filter }}{% endif %}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        
+        {% if customers.has_next %}
+            <li class="waves-effect">
+                <a href="?page={{ customers.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if source_filter %}&source={{ source_filter }}{% endif %}">
+                    <i class="material-icons">chevron_right</i>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleView(viewType) {
+    const tableView = document.getElementById('table-view');
+    const cardView = document.getElementById('card-view');
+    
+    if (viewType === 'table') {
+        tableView.style.display = 'block';
+        cardView.style.display = 'none';
+    } else {
+        tableView.style.display = 'none';
+        cardView.style.display = 'block';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dropdowns
+    var dropdownElems = document.querySelectorAll('.dropdown-trigger');
+    M.Dropdown.init(dropdownElems);
+    
+    // Initialize tooltips
+    var tooltipElems = document.querySelectorAll('[data-tooltip]');
+    M.Tooltip.init(tooltipElems);
+    
+    // Initialize select elements
+    var selectElems = document.querySelectorAll('select');
+    M.FormSelect.init(selectElems);
+});
+</script>
+{% endblock %}

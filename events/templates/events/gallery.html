@@ -1,0 +1,783 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block title %}Gallery - Toy Alumbunaties{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Font Import */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+  /* Global Styles */
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Showcase Card */
+  .showcase-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .showcase-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .media-container img,
+Hobbes
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
+    transition: transform 0.3s ease;
+  }
+
+  .showcase-card:hover .media-container img {
+    transform: scale(1.05);
+  }
+
+  .content-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 99, 132, 0.9), rgba(186, 85, 211, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border-radius: 16px;
+  }
+
+  .showcase-card:hover .content-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .overlay-content {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    transform: translateY(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .showcase-card:hover .overlay-content {
+    transform: translateY(0);
+  }
+
+  .overlay-content .title-text {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .overlay-content .category-text {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    opacity: 0.9;
+  }
+
+  .overlay-content .description-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Filter Navigation */
+  .filter-navigation {
+    text-align: center;
+    margin-bottom: 40px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  }
+
+  .filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .category-filter {
+    background: linear-gradient(135deg, #ff85a1, #ffcb77);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 24px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .category-filter:hover,
+  .category-filter.filter-active {
+    background: linear-gradient(135deg, #ff4d6d, #ffaa33);
+    transform: scale(1.03);
+  }
+
+  .category-filter.filter-active {
+    background: linear-gradient(135deg, #6a4caf, #9b59b6);
+  }
+
+  /* Media Type Label */
+  .media-type-label {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 3;
+  }
+
+  /* Video Styles */
+  .video-wrapper {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .video-display {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+  .play-pause-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    transition: opacity 0.3s ease;
+  }
+
+  .video-wrapper.playing .play-pause-btn {
+    opacity: 0;
+  }
+
+  .video-progress {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    z-index: 3;
+  }
+
+  .video-progress-fill {
+    height: 100%;
+    background: #ff6b6b;
+    width: 0;
+    border-radius: 2px;
+    transition: width 0.1s linear;
+  }
+
+  /* Lightbox */
+  .image-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-lightbox img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .lightbox-caption {
+    color: white;
+    font-size: 1rem;
+    margin-top: 10px;
+    text-align: center;
+    max-width: 80%;
+  }
+
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .lightbox-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .lightbox-prev {
+    left: 10px;
+  }
+
+  .lightbox-next {
+    right: 10px;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    background: linear-gradient(135deg, #ff85a1, #ffcb77);
+    border-radius: 16px;
+    padding: 40px 20px;
+    margin-bottom: 40px;
+  }
+
+  .cta-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+  }
+
+  .cta-description {
+    font-size: 1.1rem;
+    color: white;
+    opacity: 0.9;
+    margin-bottom: 30px;
+  }
+
+  .cta-buttons .btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 24px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #6a4caf, #9b59b6);
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #5a3d9b, #8a48a6);
+  }
+
+  .btn-outline-primary {
+    border-color: white;
+    color: white;
+  }
+
+  .btn-outline-primary:hover {
+    background: white;
+    color: #6a4caf;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .showcase-card {
+      margin-bottom: 20px;
+    }
+
+    .media-container img,
+    .video-display {
+      height: 200px;
+    }
+
+    .filter-controls {
+      gap: 8px;
+    }
+
+    .category-filter {
+      padding: 10px 18px;
+      font-size: 0.85rem;
+    }
+
+    .cta-title {
+      font-size: 1.8rem;
+    }
+
+    .cta-description {
+      font-size: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header py-5">
+  <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(255, 99, 132, 0.8), rgba(186, 85, 211, 0.8));"></div>
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h1 class="page-title text-white" data-aos="fade-up">
+          Our <span class="text-script" style="font-family: 'Poppins', cursive; color: #ffcb77;">Magical</span> Gallery 🎉
+        </h1>
+        <p class="page-subtitle text-white" data-aos="fade-up" data-aos-delay="200">
+          Relive the joy and excitement of our unforgettable events
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section -->
+<section class="gallery-section py-5 bg-light">
+  <div class="container">
+    <!-- Test Controls -->
+    <div class="text-center test-controls mb-4">
+      <button id="videoTestButton" class="test-btn">
+        <i class="fas fa-video me-2"></i>Test Video System
+      </button>
+      <div id="systemStatus" class="mt-3"></div>
+    </div>
+
+    <!-- Filter Navigation -->
+    <div class="filter-navigation mb-5" data-aos="fade-up">
+      <div class="filter-controls">
+        <button class="category-filter filter-active btn" data-filter="all">All 🌟</button>
+        <button class="category-filter btn" data-filter="characters">Characters 🎭</button>
+        <button class="category-filter btn" data-filter="dance">Dance 💃</button>
+        <button class="category-filter btn" data-filter="parties">Parties 🎉</button>
+        <button class="category-filter btn" data-filter="games">Games 🎲</button>
+        <button class="category-filter btn" data-filter="sports">Sports ⚽</button>
+        <button class="category-filter btn" data-filter="photos">Photos 📸</button>
+        <button class="category-filter btn" data-filter="videos">Videos 🎥</button>
+      </div>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="row gallery-display">
+      {% for item in gallery_items %}
+      <div
+        class="col-lg-4 col-md-6 mb-4 gallery-item-animated"
+        data-category="{{ item.category }}"
+        data-type="{{ item.type }}"
+        data-aos="fade-up"
+        data-aos-delay="{{ forloop.counter|add:1 }}00"
+      >
+        <div class="showcase-card">
+          {% if item.type == 'image' %}
+          <!-- Image Display -->
+          <div class="media-container">
+            <img
+              src="{{ item.media_url }}"
+              alt="{{ item.title }}"
+              class="img-fluid photo-element"
+            />
+          </div>
+          {% elif item.type == 'video' %}
+          <!-- Video Container -->
+          <div class="video-wrapper" data-video-id="{{ forloop.counter }}">
+            <div class="media-container">
+              <video
+                class="img-fluid video-display"
+                preload="metadata"
+                muted
+                loop
+                data-video-index="{{ forloop.counter }}"
+              >
+                <source src="{{ item.media_url }}" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <button class="play-pause-btn">
+              <i class="fas fa-play"></i>
+            </button>
+            <div class="video-progress">
+              <div class="video-progress-fill"></div>
+            </div>
+            <div class="video-info">
+              Video {{ forloop.counter }}
+            </div>
+          </div>
+          {% else %}
+          <!-- Placeholder -->
+          <div class="media-container d-flex align-items-center justify-content-center" style="height: 260px; background: #f8f9fa;">
+            <div class="text-center">
+              <i class="fas fa-image fa-3x text-muted mb-3"></i>
+              <p class="text-muted">Content Loading...</p>
+            </div>
+          </div>
+          {% endif %}
+          <!-- Media Type Label -->
+          <div class="media-type-label">
+            {% if item.type == 'image' %}📸 Photo{% else %}🎥 Video{% endif %}
+          </div>
+          <!-- Content Overlay -->
+          <div class="content-overlay">
+            <div class="overlay-content">
+              <h5 class="title-text">{{ item.title }}</h5>
+              <p class="category-text">{{ item.get_category_display }}</p>
+              {% if item.description %}
+              <p class="description-text">{{ item.description|truncatewords:10 }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center">
+        <div class="empty-state py-5">
+          <i class="fas fa-camera-retro fa-5x text-muted mb-4"></i>
+          <h3 class="text-muted">Gallery Coming Soon!</h3>
+          <p class="text-muted">We're preparing magical content for you. Stay tuned! 🎭</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Load More Section -->
+    {% if gallery_items.count > 12 %}
+    <div class="text-center mt-5" data-aos="fade-up">
+      <button class="btn btn-primary load-more-btn" id="loadMoreContent">
+        <i class="fas fa-plus-circle me-2"></i>Load More
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h2 class="cta-title" data-aos="fade-up">
+          Create Your Own <span class="text-script" style="font-family: 'Poppins', cursive;">Magical</span> Moments! ✨
+        </h2>
+        <p class="cta-description" data-aos="fade-up" data-aos-delay="200">
+          Bring joy and excitement to your child's next celebration with our magical events!
+        </p>
+        <div class="cta-buttons" data-aos="fade-up" data-aos-delay="400">
+          <a href="{% url 'contact' %}" class="btn btn-primary me-3">
+            <i class="fas fa-calendar-plus me-2"></i>Book Now
+          </a>
+          <a href="{% url 'services' %}" class="btn btn-outline-primary">
+            <i class="fas fa-star me-2"></i>Our Services
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("🎨 Gallery initialized");
+
+  // Filter System
+  const filterButtons = document.querySelectorAll(".category-filter");
+  const galleryItems = document.querySelectorAll(".gallery-item-animated");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      filterButtons.forEach((btn) => btn.classList.remove("filter-active"));
+      this.classList.add("filter-active");
+
+      const filterValue = this.getAttribute("data-filter");
+
+      galleryItems.forEach((item) => {
+        const category = item.getAttribute("data-category");
+        const type = item.getAttribute("data-type");
+
+        let shouldDisplay = false;
+
+        if (filterValue === "all") {
+          shouldDisplay = true;
+        } else if (filterValue === "videos" && type === "video") {
+          shouldDisplay = true;
+        } else if (filterValue === "photos" && type === "image") {
+          shouldDisplay = true;
+        } else if (category === filterValue) {
+          shouldDisplay = true;
+        }
+
+        item.style.display = shouldDisplay ? "block" : "none";
+        if (shouldDisplay) {
+          item.style.animation = "fadeInUp 0.5s ease";
+        }
+      });
+    });
+  });
+
+  // Video System
+  const videoContainers = document.querySelectorAll(".video-wrapper");
+  const statusDisplay = document.getElementById("systemStatus");
+
+  console.log(`🎥 Initializing ${videoContainers.length} video elements`);
+
+  if (statusDisplay) {
+    statusDisplay.innerHTML = `<small class="text-info"><i class="fas fa-info-circle me-1"></i>${videoContainers.length} videos detected</small>`;
+  }
+
+  videoContainers.forEach((container, index) => {
+    const video = container.querySelector(".video-display");
+    const playPauseBtn = container.querySelector(".play-pause-btn");
+    const progressFill = container.querySelector(".video-progress-fill");
+    const videoId = container.getAttribute("data-video-id") || (index + 1);
+
+    if (!video || !playPauseBtn) return;
+
+    console.log(`🎬 Setting up video ${videoId}`);
+
+    let isPlaying = false;
+
+    const updateProgress = () => {
+      if (isPlaying) {
+        const progress = (video.currentTime / video.duration) * 100;
+        progressFill.style.width = `${progress}%`;
+      }
+    };
+
+    const togglePlayPause = () => {
+      if (video.paused) {
+        video.play();
+        isPlaying = true;
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        container.classList.add("playing");
+        console.log(`✅ Video ${videoId} playing`);
+        if (statusDisplay) {
+          statusDisplay.innerHTML = `<small class="text-success"><i class="fas fa-play-circle me-1"></i>Video ${videoId} playing</small>`;
+        }
+      } else {
+        video.pause();
+        isPlaying = false;
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        container.classList.remove("playing");
+        console.log(`⏸️ Video ${videoId} paused`);
+        if (statusDisplay) {
+          statusDisplay.innerHTML = `<small class="text-muted"><i class="fas fa-pause-circle me-1"></i>Video ${videoId} paused</small>`;
+        }
+      }
+    };
+
+    playPauseBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      togglePlayPause();
+    });
+
+    container.addEventListener("click", (e) => {
+      if (e.target !== playPauseBtn) {
+        togglePlayPause();
+      }
+    });
+
+    video.addEventListener("timeupdate", updateProgress);
+    video.addEventListener("ended", () => {
+      isPlaying = false;
+      playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+      container.classList.remove("playing");
+      progressFill.style.width = "0%";
+    });
+
+    video.addEventListener("canplay", () => {
+      console.log(`📊 Video ${videoId} ready`);
+    });
+
+    video.addEventListener("error", (e) => {
+      console.error(`❌ Video ${videoId} error:`, e);
+      if (statusDisplay) {
+        statusDisplay.innerHTML = `<small class="text-danger"><i class="fas fa-exclamation-circle me-1"></i>Video ${videoId} error</small>`;
+      }
+    });
+  });
+
+  // Enhanced Image Lightbox
+  const images = document.querySelectorAll(".photo-element");
+  let currentImageIndex = -1;
+  const galleryImages = Array.from(images).map(img => ({
+    src: img.src,
+    alt: img.alt
+  }));
+
+  function showLightbox(index) {
+    if (index < 0 || index >= galleryImages.length) return;
+
+    currentImageIndex = index;
+    const lightbox = document.createElement("div");
+    lightbox.className = "image-lightbox";
+
+    const content = document.createElement("div");
+    content.className = "lightbox-content";
+
+    const img = document.createElement("img");
+    img.src = galleryImages[index].src;
+    img.alt = galleryImages[index].alt;
+
+    const caption = document.createElement("div");
+    caption.className = "lightbox-caption";
+    caption.textContent = galleryImages[index].alt || "Gallery Image";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "lightbox-nav lightbox-prev";
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    prevBtn.style.display = currentImageIndex > 0 ? "block" : "none";
+    prevBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.body.removeChild(lightbox);
+      showLightbox(currentImageIndex - 1);
+    });
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "lightbox-nav lightbox-next";
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    nextBtn.style.display = currentImageIndex < galleryImages.length - 1 ? "block" : "none";
+    nextBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.body.removeChild(lightbox);
+      showLightbox(currentImageIndex + 1);
+    });
+
+    content.appendChild(img);
+    content.appendChild(caption);
+    content.appendChild(prevBtn);
+    content.appendChild(nextBtn);
+    lightbox.appendChild(content);
+    document.body.appendChild(lightbox);
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) {
+        document.body.removeChild(lightbox);
+      }
+    });
+
+    document.addEventListener('keydown', function escapeHandler(e) {
+      if (e.key === 'Escape') {
+        if (document.body.contains(lightbox)) {
+          document.body.removeChild(lightbox);
+        }
+      } else if (e.key === 'ArrowLeft' && currentImageIndex > 0) {
+        document.body.removeChild(lightbox);
+        showLightbox(currentImageIndex - 1);
+      } else if (e.key === 'ArrowRight' && currentImageIndex < galleryImages.length - 1) {
+        document.body.removeChild(lightbox);
+        showLightbox(currentImageIndex + 1);
+      }
+    }, { once: true });
+  }
+
+  images.forEach((img, index) => {
+    img.style.cursor = "pointer";
+    img.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showLightbox(index);
+    });
+  });
+
+  // Test System
+  const testButton = document.getElementById("videoTestButton");
+  if (testButton) {
+    testButton.addEventListener("click", function () {
+      console.log("🧪 Running video system test...");
+      const firstContainer = document.querySelector(".video-wrapper");
+      
+      if (firstContainer) {
+        const firstVideo = firstContainer.querySelector(".video-display");
+        const videoId = firstContainer.getAttribute("data-video-id") || "1";
+        
+        console.log(`🧪 Testing video ${videoId}`);
+        
+        testButton.textContent = "🔄 Testing System...";
+        testButton.disabled = true;
+        
+        firstVideo.play()
+          .then(() => {
+            console.log("✅ Video system test passed!");
+            testButton.textContent = "✅ System Working!";
+            testButton.className = "test-btn btn-success";
+            
+            if (statusDisplay) {
+              statusDisplay.innerHTML = '<small class="text-success"><i class="fas fa-check-circle me-1"></i>Video system test successful!</small>';
+            }
+            
+            setTimeout(() => {
+              firstVideo.pause();
+              firstVideo.currentTime = 0;
+              testButton.disabled = false;
+              testButton.textContent = "🎬 Test Video System";
+              testButton.className = "test-btn";
+            }, 2500);
+          })
+          .catch((error) => {
+            console.error("❌ Video system test failed:", error);
+            testButton.textContent = "❌ System Issue";
+            testButton.className = "test-btn btn-danger";
+            testButton.disabled = false;
+            
+            if (statusDisplay) {
+              statusDisplay.innerHTML = `<small class="text-danger"><i class="fas fa-times-circle me-1"></i>Test failed: ${error.message}</small>`;
+            }
+          });
+      } else {
+        console.error("No video containers found!");
+        testButton.textContent = "❌ No Videos Found";
+        testButton.className = "test-btn btn-danger";
+        
+        if (statusDisplay) {
+          statusDisplay.innerHTML = `<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>No videos detected</small>`;
+        }
+      }
+    });
+  }
+
+  // Load More Functionality
+  const loadMoreButton = document.getElementById("loadMoreContent");
+  if (loadMoreButton) {
+    loadMoreButton.addEventListener("click", function () {
+      console.log("Loading additional content...");
+      this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading More...';
+      // Add AJAX functionality here
+    });
+  }
+});
+</script>
+{% endblock %}

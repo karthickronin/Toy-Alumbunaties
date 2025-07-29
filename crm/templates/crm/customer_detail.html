@@ -1,0 +1,429 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}{{ customer.full_name }}{% endblock %}
+{% block page_title %}{{ customer.full_name }}{% endblock %}
+{% block page_subtitle %}Customer Details{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'crm:customer_edit' customer.id %}" class="btn primary-color waves-effect waves-light">
+    <i class="material-icons left">edit</i>Edit Customer
+</a>
+<a href="{% url 'crm:booking_create_for_customer' customer.id %}" class="btn green waves-effect waves-light">
+    <i class="material-icons left">event_available</i>New Booking
+</a>
+<a href="{% url 'crm:add_interaction' customer.id %}" class="btn blue waves-effect waves-light">
+    <i class="material-icons left">chat</i>Add Interaction
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Customer Overview -->
+<div class="row">
+    <div class="col s12 l8">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">person</i>Customer Information
+                </span>
+                
+                <div class="row">
+                    <div class="col s12 m6">
+                        <div class="collection">
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">person</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Name</strong><br>
+                                        {{ customer.full_name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">email</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Email</strong><br>
+                                        <a href="mailto:{{ customer.email }}" class="primary-text">{{ customer.email }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">phone</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Phone</strong><br>
+                                        <a href="tel:{{ customer.phone }}" class="primary-text">{{ customer.phone }}</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if customer.company %}
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">business</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Company</strong><br>
+                                        {{ customer.company }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col s12 m6">
+                        <div class="collection">
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">flag</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Status</strong><br>
+                                        <span class="status-badge status-{{ customer.status }}">
+                                            {{ customer.get_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">source</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Lead Source</strong><br>
+                                        <span class="chip">{{ customer.get_lead_source_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">person_outline</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Assigned To</strong><br>
+                                        {% if customer.assigned_to %}
+                                            {{ customer.assigned_to.first_name }} {{ customer.assigned_to.last_name }}
+                                        {% else %}
+                                            <span class="grey-text">Unassigned</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">date_range</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Created</strong><br>
+                                        {{ customer.created_at|date:"M d, Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if customer.address %}
+                <div class="divider" style="margin: 24px 0;"></div>
+                <div class="row">
+                    <div class="col s12">
+                        <h6><i class="material-icons left">location_on</i>Address</h6>
+                        <p class="grey-text">
+                            {{ customer.address }}
+                            {% if customer.city %}, {{ customer.city }}{% endif %}
+                            {% if customer.state %}, {{ customer.state }}{% endif %}
+                            {% if customer.pincode %} - {{ customer.pincode }}{% endif %}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if customer.notes %}
+                <div class="divider" style="margin: 24px 0;"></div>
+                <div class="row">
+                    <div class="col s12">
+                        <h6><i class="material-icons left">note</i>Notes</h6>
+                        <p class="grey-text">{{ customer.notes }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 l4">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">analytics</i>Quick Stats
+                </span>
+                
+                <div class="row">
+                    <div class="col s6">
+                        <div class="metric-card customers" style="padding: 24px 16px; margin-bottom: 16px;">
+                            <div class="metric-value" style="font-size: 2rem;">{{ customer.total_bookings|default:0 }}</div>
+                            <div class="metric-label" style="font-size: 0.9rem;">Total Bookings</div>
+                        </div>
+                    </div>
+                    <div class="col s6">
+                        <div class="metric-card revenue" style="padding: 24px 16px; margin-bottom: 16px;">
+                            <div class="metric-value" style="font-size: 1.5rem;">₹{{ customer.total_revenue|floatformat:0|default:0 }}</div>
+                            <div class="metric-label" style="font-size: 0.9rem;">Total Revenue</div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if customer.last_contacted %}
+                <div class="center-align">
+                    <p class="grey-text">
+                        <i class="material-icons tiny">schedule</i>
+                        Last contacted: {{ customer.last_contacted|date:"M d, Y" }}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs for Related Information -->
+<div class="card">
+    <div class="card-content">
+        <div class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3">
+                        <a href="#bookings" class="active">
+                            <i class="material-icons left">event</i>
+                            Bookings ({{ bookings.count|default:0 }})
+                        </a>
+                    </li>
+                    <li class="tab col s3">
+                        <a href="#interactions">
+                            <i class="material-icons left">chat</i>
+                            Interactions ({{ interactions.count|default:0 }})
+                        </a>
+                    </li>
+                    <li class="tab col s3">
+                        <a href="#tasks">
+                            <i class="material-icons left">assignment</i>
+                            Tasks ({{ tasks.count|default:0 }})
+                        </a>
+                    </li>
+                    <li class="tab col s3">
+                        <a href="#quotes">
+                            <i class="material-icons left">description</i>
+                            Quotes ({{ quotes.count|default:0 }})
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Bookings Tab -->
+        <div id="bookings" class="col s12">
+            {% if bookings %}
+                <div class="data-table">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Event Date</th>
+                                <th>Type</th>
+                                <th>Package</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.event_date|date:"M d, Y" }}</td>
+                                <td>{{ booking.get_event_type_display }}</td>
+                                <td>
+                                    <span class="chip primary-color white-text">
+                                        {{ booking.get_package_display }}
+                                    </span>
+                                </td>
+                                <td><strong>₹{{ booking.total_amount|floatformat:0 }}</strong></td>
+                                <td>
+                                    <span class="status-badge status-{{ booking.status }}">
+                                        {{ booking.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'crm:booking_detail' booking.id %}" class="btn-small primary-color waves-effect waves-light" data-tooltip="View Details">
+                                        <i class="material-icons">visibility</i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="material-icons">event_available</i>
+                    <h6>No bookings yet</h6>
+                    <p>Create the first booking for this customer</p>
+                    <a href="{% url 'crm:booking_create_for_customer' customer.id %}" class="btn primary-color waves-effect waves-light">
+                        <i class="material-icons left">add</i>Create Booking
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Interactions Tab -->
+        <div id="interactions" class="col s12">
+            {% if interactions %}
+                {% for interaction in interactions %}
+                <div class="card-panel">
+                    <div class="row valign-wrapper" style="margin-bottom: 0;">
+                        <div class="col s10">
+                            <h6>
+                                <i class="material-icons left">{{ interaction.interaction_type }}</i>
+                                {{ interaction.subject }}
+                            </h6>
+                            <p>{{ interaction.description }}</p>
+                            <small class="grey-text">
+                                by {{ interaction.created_by.first_name }} {{ interaction.created_by.last_name }}
+                                on {{ interaction.created_at|date:"M d, Y g:i A" }}
+                            </small>
+                        </div>
+                        <div class="col s2 right-align">
+                            <span class="chip">
+                                {{ interaction.get_interaction_type_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="material-icons">chat_bubble_outline</i>
+                    <h6>No interactions yet</h6>
+                    <p>Add the first interaction with this customer</p>
+                    <a href="{% url 'crm:add_interaction' customer.id %}" class="btn primary-color waves-effect waves-light">
+                        <i class="material-icons left">add</i>Add Interaction
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Tasks Tab -->
+        <div id="tasks" class="col s12">
+            {% if tasks %}
+                <div class="data-table">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Priority</th>
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th>Assigned To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                            <tr>
+                                <td>
+                                    <strong>{{ task.title }}</strong>
+                                    {% if task.description %}
+                                        <br><small class="grey-text">{{ task.description|truncatewords:10 }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <i class="material-icons priority-{{ task.priority }} tiny">flag</i>
+                                    <span class="priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-{{ task.status }}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ task.due_date|date:"M d, Y" }}</td>
+                                <td>{{ task.assigned_to.first_name }} {{ task.assigned_to.last_name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="material-icons">assignment_turned_in</i>
+                    <h6>No tasks yet</h6>
+                    <p>No tasks assigned for this customer</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Quotes Tab -->
+        <div id="quotes" class="col s12">
+            {% if quotes %}
+                <div class="data-table">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>Quote #</th>
+                                <th>Event Type</th>
+                                <th>Event Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Valid Until</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for quote in quotes %}
+                            <tr>
+                                <td><strong>{{ quote.quote_number }}</strong></td>
+                                <td>{{ quote.get_event_type_display }}</td>
+                                <td>{{ quote.event_date|date:"M d, Y" }}</td>
+                                <td><strong>₹{{ quote.total_amount|floatformat:0 }}</strong></td>
+                                <td>
+                                    <span class="status-badge status-{{ quote.status }}">
+                                        {{ quote.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ quote.valid_until|date:"M d, Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="material-icons">description</i>
+                    <h6>No quotes yet</h6>
+                    <p>No quotes generated for this customer</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tabs
+    var tabElems = document.querySelectorAll('.tabs');
+    M.Tabs.init(tabElems);
+    
+    // Initialize tooltips
+    var tooltipElems = document.querySelectorAll('[data-tooltip]');
+    M.Tooltip.init(tooltipElems);
+});
+</script>
+{% endblock %}

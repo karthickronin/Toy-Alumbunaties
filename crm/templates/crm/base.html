@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CRM Dashboard{% endblock %} - Toy Alumbunaties</title>
+    
+    <!-- Material Design CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #ff6b35;
+            --primary-light: #ff9866;
+            --primary-dark: #c73e00;
+            --secondary-color: #4ecdc4;
+            --secondary-light: #7ffff7;
+            --secondary-dark: #009b93;
+            --surface-color: #ffffff;
+            --background-color: #f5f5f5;
+            --error-color: #f44336;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --info-color: #2196f3;
+            --text-primary: #212121;
+            --text-secondary: #757575;
+            --divider-color: #e0e0e0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Custom Material Colors */
+        .primary-color { background-color: var(--primary-color) !important; }
+        .primary-text { color: var(--primary-color) !important; }
+        .secondary-color { background-color: var(--secondary-color) !important; }
+        .secondary-text { color: var(--secondary-color) !important; }
+        
+        /* Sidebar Styling */
+        .sidenav {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            width: 280px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .sidenav .user-view {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            margin: 16px;
+            padding: 24px;
+        }
+        
+        .sidenav li > a {
+            color: rgba(255,255,255,0.9);
+            font-weight: 400;
+            padding: 12px 32px;
+            border-radius: 0 24px 24px 0;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .sidenav li > a:hover,
+        .sidenav li > a.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            transform: translateX(8px);
+        }
+        
+        .sidenav li > a > i {
+            margin-right: 16px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 24px;
+            min-height: 100vh;
+        }
+        
+        @media only screen and (max-width: 992px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        /* Material Cards */
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        
+        .card .card-content {
+            padding: 24px;
+        }
+        
+        .card .card-title {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        
+        /* Metric Cards */
+        .metric-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 32px 24px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        
+        .metric-card.customers {
+            background: linear-gradient(135deg, #2196f3, #64b5f6);
+        }
+        
+        .metric-card.revenue {
+            background: linear-gradient(135deg, #4caf50, #81c784);
+        }
+        
+        .metric-card.bookings {
+            background: linear-gradient(135deg, #ff9800, #ffb74d);
+        }
+        
+        .metric-card.leads {
+            background: linear-gradient(135deg, #9c27b0, #ba68c8);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .metric-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .metric-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-new { background: #e3f2fd; color: #1976d2; }
+        .status-contacted { background: #f3e5f5; color: #7b1fa2; }
+        .status-qualified { background: #e8f5e8; color: #388e3c; }
+        .status-proposal { background: #fff3e0; color: #f57c00; }
+        .status-won { background: #e8f5e8; color: #2e7d32; }
+        .status-lost { background: #ffebee; color: #d32f2f; }
+        .status-existing { background: #e0f2f1; color: #00796b; }
+        
+        .status-inquiry { background: #e3f2fd; color: #1976d2; }
+        .status-quoted { background: #fff3e0; color: #f57c00; }
+        .status-confirmed { background: #e8f5e8; color: #388e3c; }
+        .status-completed { background: #e8f5e8; color: #2e7d32; }
+        .status-cancelled { background: #ffebee; color: #d32f2f; }
+        
+        /* Priority Indicators */
+        .priority-low { color: #4caf50; }
+        .priority-medium { color: #ff9800; }
+        .priority-high { color: #f44336; }
+        .priority-urgent { color: #e91e63; font-weight: bold; }
+        
+        /* Tables */
+        .data-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .data-table table {
+            margin: 0;
+        }
+        
+        .data-table thead {
+            background: var(--background-color);
+        }
+        
+        .data-table th {
+            font-weight: 500;
+            color: var(--text-secondary);
+            padding: 16px;
+            border: none;
+        }
+        
+        .data-table td {
+            padding: 16px;
+            border: none;
+            border-bottom: 1px solid var(--divider-color);
+        }
+        
+        .data-table tbody tr:hover {
+            background: rgba(255,107,53,0.04);
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+        
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 0.9rem;
+        }
+        
+        /* Buttons */
+        .btn-floating {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        
+        .btn-floating:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin: 0 0 8px 0;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            padding: 16px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .tabs .tab a {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .tabs .tab a:hover,
+        .tabs .tab a.active {
+            color: var(--primary-color);
+        }
+        
+        .tabs .indicator {
+            background-color: var(--primary-color);
+        }
+        
+        /* Forms */
+        .input-field input:focus + label,
+        .input-field textarea:focus + label {
+            color: var(--primary-color) !important;
+        }
+        
+        .input-field input:focus,
+        .input-field textarea:focus {
+            border-bottom: 1px solid var(--primary-color) !important;
+            box-shadow: 0 1px 0 0 var(--primary-color) !important;
+        }
+        
+        /* Pagination */
+        .pagination li.active {
+            background-color: var(--primary-color);
+        }
+        
+        .pagination li a {
+            color: var(--primary-color);
+        }
+        
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 64px 32px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h5 {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        /* Loading States */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .main-content {
+                padding: 16px;
+            }
+            
+            .page-header {
+                padding: 24px 16px;
+            }
+            
+            .metric-card {
+                padding: 24px 16px;
+            }
+            
+            .card .card-content {
+                padding: 16px;
+            }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--background-color);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <div style="background: rgba(255,255,255,0.1); height: 100%; border-radius: 12px;"></div>
+                </div>
+                <a href="#user">
+                    <div class="avatar">
+                        {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|upper|default:'' }}
+                    </div>
+                </a>
+                <a href="#name">
+                    <span class="white-text name" style="font-weight: 500;">
+                        {{ user.first_name|default:user.username }} {{ user.last_name }}
+                    </span>
+                </a>
+                <a href="#email">
+                    <span class="white-text email">{{ user.email }}</span>
+                </a>
+            </div>
+        </li>
+        
+        <li><a href="{% url 'crm:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="material-icons">dashboard</i>Dashboard
+        </a></li>
+        
+        <li><a href="{% url 'crm:customer_list' %}" class="{% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="material-icons">people</i>Customers
+        </a></li>
+        
+        <li><a href="{% url 'crm:booking_list' %}" class="{% if 'booking' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="material-icons">event</i>Bookings
+        </a></li>
+        
+        <li><a href="{% url 'crm:task_list' %}" class="{% if 'task' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="material-icons">assignment</i>Tasks
+        </a></li>
+        
+        <li><a href="{% url 'crm:reports' %}" class="{% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+            <i class="material-icons">analytics</i>Reports
+        </a></li>
+        
+        <li><div class="divider"></div></li>
+        
+        <li><a href="{% url 'home' %}" target="_blank">
+            <i class="material-icons">public</i>Website
+        </a></li>
+        
+        <li><a href="/admin/" target="_blank">
+            <i class="material-icons">settings</i>Admin
+        </a></li>
+        
+        <li><a href="{% url 'crm:logout' %}">
+            <i class="material-icons">exit_to_app</i>Logout
+        </a></li>
+    </ul>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row valign-wrapper" style="margin-bottom: 0;">
+                <div class="col s12 m8">
+                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <p class="page-subtitle">{% block page_subtitle %}Welcome back, {{ user.first_name|default:user.username }}!{% endblock %}</p>
+                </div>
+                <div class="col s12 m4 right-align">
+                    {% block header_actions %}{% endblock %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="card-panel {{ message.tags }} lighten-4">
+                    <i class="material-icons left">
+                        {% if message.tags == 'success' %}check_circle
+                        {% elif message.tags == 'error' %}error
+                        {% elif message.tags == 'warning' %}warning
+                        {% else %}info{% endif %}
+                    </i>
+                    {{ message }}
+                    <a href="#!" class="secondary-content" onclick="this.parentElement.style.display='none'">
+                        <i class="material-icons">close</i>
+                    </a>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <!-- Content -->
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Floating Action Button -->
+    {% block fab %}
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large primary-color">
+            <i class="large material-icons">add</i>
+        </a>
+        <ul>
+            <li><a class="btn-floating blue" href="{% url 'crm:customer_create' %}" data-tooltip="Add Customer">
+                <i class="material-icons">person_add</i>
+            </a></li>
+            <li><a class="btn-floating green" href="{% url 'crm:booking_create' %}" data-tooltip="New Booking">
+                <i class="material-icons">event_available</i>
+            </a></li>
+        </ul>
+    </div>
+    {% endblock %}
+    
+    <!-- Material Design JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    
+    <script>
+        // Initialize Material Design components
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize sidenav
+            var elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+            
+            // Initialize floating action button
+            var fabElems = document.querySelectorAll('.fixed-action-btn');
+            M.FloatingActionButton.init(fabElems);
+            
+            // Initialize tooltips
+            var tooltipElems = document.querySelectorAll('[data-tooltip]');
+            M.Tooltip.init(tooltipElems);
+            
+            // Initialize tabs
+            var tabElems = document.querySelectorAll('.tabs');
+            M.Tabs.init(tabElems);
+            
+            // Initialize dropdowns
+            var dropdownElems = document.querySelectorAll('.dropdown-trigger');
+            M.Dropdown.init(dropdownElems);
+            
+            // Initialize modals
+            var modalElems = document.querySelectorAll('.modal');
+            M.Modal.init(modalElems);
+            
+            // Initialize select
+            var selectElems = document.querySelectorAll('select');
+            M.FormSelect.init(selectElems);
+            
+            // Initialize datepicker
+            var datepickerElems = document.querySelectorAll('.datepicker');
+            M.Datepicker.init(datepickerElems);
+            
+            // Auto-hide messages after 5 seconds
+            setTimeout(function() {
+                var messages = document.querySelectorAll('.card-panel.success, .card-panel.error, .card-panel.warning, .card-panel.info');
+                messages.forEach(function(msg) {
+                    msg.style.opacity = '0';
+                    msg.style.transition = 'opacity 0.5s';
+                    setTimeout(function() {
+                        msg.style.display = 'none';
+                    }, 500);
+                });
+            }, 5000);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

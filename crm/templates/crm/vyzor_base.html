@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vyzor Dashboard{% endblock %} - Toy Alumbunaties CRM</title>
+    
+    <!-- Vyzor CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --vz-primary: #ff6b35;
+            --vz-secondary: #4ecdc4;
+            --vz-success: #10b981;
+            --vz-info: #3b82f6;
+            --vz-warning: #f59e0b;
+            --vz-danger: #ef4444;
+            --vz-light: #f8fafc;
+            --vz-dark: #1e293b;
+            --vz-body-bg: #f1f5f9;
+            --vz-body-color: #64748b;
+            --vz-border-color: #e2e8f0;
+            --vz-sidebar-bg: #ffffff;
+            --vz-sidebar-width: 260px;
+            --vz-header-height: 70px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--vz-body-bg);
+            color: var(--vz-body-color);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        /* Sidebar */
+        .vz-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--vz-sidebar-width);
+            height: 100vh;
+            background: var(--vz-sidebar-bg);
+            border-right: 1px solid var(--vz-border-color);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+        
+        .vz-sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--vz-border-color);
+        }
+        
+        .vz-brand-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--vz-dark);
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        .vz-brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .vz-sidebar-nav {
+            padding: 1rem 0;
+        }
+        
+        .vz-nav-item {
+            margin: 0 1rem 0.5rem;
+        }
+        
+        .vz-nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--vz-body-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .vz-nav-link:hover,
+        .vz-nav-link.active {
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            color: white;
+            transform: translateX(4px);
+        }
+        
+        .vz-nav-icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+        
+        /* Main Content */
+        .vz-main {
+            margin-left: var(--vz-sidebar-width);
+            min-height: 100vh;
+        }
+        
+        .vz-header {
+            background: white;
+            border-bottom: 1px solid var(--vz-border-color);
+            padding: 0 2rem;
+            height: var(--vz-header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        
+        .vz-page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--vz-dark);
+            margin: 0;
+        }
+        
+        .vz-page-subtitle {
+            color: var(--vz-body-color);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .vz-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .vz-content {
+            padding: 2rem;
+        }
+        
+        /* Cards */
+        .vz-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--vz-border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .vz-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .vz-card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--vz-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: between;
+        }
+        
+        .vz-card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--vz-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .vz-card-title i {
+            margin-right: 8px;
+            color: var(--vz-primary);
+        }
+        
+        .vz-card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Metric Cards */
+        .vz-metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--vz-border-color);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .vz-metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vz-primary), var(--vz-secondary));
+        }
+        
+        .vz-metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .vz-metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .vz-metric-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--vz-body-color);
+            margin: 0;
+        }
+        
+        .vz-metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .vz-metric-icon.customers { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .vz-metric-icon.revenue { background: linear-gradient(135deg, #10b981, #059669); }
+        .vz-metric-icon.bookings { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .vz-metric-icon.leads { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        
+        .vz-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--vz-dark);
+            margin: 0;
+        }
+        
+        .vz-metric-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        .vz-metric-change.positive {
+            color: var(--vz-success);
+        }
+        
+        .vz-metric-change.negative {
+            color: var(--vz-danger);
+        }
+        
+        /* Buttons */
+        .vz-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .vz-btn-primary {
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            color: white;
+        }
+        
+        .vz-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+        
+        .vz-btn-outline {
+            background: transparent;
+            border: 1px solid var(--vz-border-color);
+            color: var(--vz-body-color);
+        }
+        
+        .vz-btn-outline:hover {
+            background: var(--vz-light);
+            color: var(--vz-dark);
+        }
+        
+        .vz-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Tables */
+        .vz-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .vz-table th {
+            background: var(--vz-light);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--vz-dark);
+            border-bottom: 1px solid var(--vz-border-color);
+        }
+        
+        .vz-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--vz-border-color);
+        }
+        
+        .vz-table tbody tr:hover {
+            background: var(--vz-light);
+        }
+        
+        /* Status Badges */
+        .vz-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .vz-badge-success { background: rgba(16, 185, 129, 0.1); color: var(--vz-success); }
+        .vz-badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--vz-warning); }
+        .vz-badge-info { background: rgba(59, 130, 246, 0.1); color: var(--vz-info); }
+        .vz-badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--vz-danger); }
+        .vz-badge-secondary { background: rgba(100, 116, 139, 0.1); color: var(--vz-body-color); }
+        
+        /* Avatar */
+        .vz-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--vz-primary), var(--vz-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .vz-avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+        }
+        
+        /* Charts */
+        .vz-chart-container {
+            position: relative;
+            height: 300px;
+            padding: 1rem;
+        }
+        
+        /* Alerts */
+        .vz-alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+        
+        .vz-alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--vz-success);
+            color: var(--vz-success);
+        }
+        
+        .vz-alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--vz-danger);
+            color: var(--vz-danger);
+        }
+        
+        .vz-alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--vz-warning);
+            color: var(--vz-warning);
+        }
+        
+        .vz-alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--vz-info);
+            color: var(--vz-info);
+        }
+        
+        /* User Profile */
+        .vz-user-profile {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-top: 1px solid var(--vz-border-color);
+            margin-top: auto;
+        }
+        
+        .vz-user-info {
+            margin-left: 0.75rem;
+        }
+        
+        .vz-user-name {
+            font-weight: 600;
+            color: var(--vz-dark);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        .vz-user-role {
+            font-size: 0.75rem;
+            color: var(--vz-body-color);
+            margin: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .vz-sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .vz-sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .vz-main {
+                margin-left: 0;
+            }
+            
+            .vz-content {
+                padding: 1rem;
+            }
+            
+            .vz-header {
+                padding: 0 1rem;
+            }
+        }
+        
+        /* Loading */
+        .vz-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--vz-border-color);
+            border-radius: 50%;
+            border-top-color: var(--vz-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--vz-light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--vz-border-color);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--vz-body-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="vz-sidebar">
+        <div class="vz-sidebar-brand">
+            <a href="{% url 'crm:dashboard' %}" class="vz-brand-logo">
+                <div class="vz-brand-icon">
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div>
+                    <div style="font-size: 1.1rem; font-weight: 700;">Toy Alumbunaties</div>
+                    <div style="font-size: 0.75rem; color: var(--vz-body-color);">CRM Dashboard</div>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="vz-sidebar-nav">
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:dashboard' %}" class="vz-nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt vz-nav-icon"></i>
+                    Dashboard
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:customer_list' %}" class="vz-nav-link {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-users vz-nav-icon"></i>
+                    Customers
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:booking_list' %}" class="vz-nav-link {% if 'booking' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-calendar-alt vz-nav-icon"></i>
+                    Bookings
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:task_list' %}" class="vz-nav-link {% if 'task' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-tasks vz-nav-icon"></i>
+                    Tasks
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:reports' %}" class="vz-nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                    <i class="fas fa-chart-bar vz-nav-icon"></i>
+                    Reports
+                </a>
+            </div>
+            
+            <hr style="margin: 1rem; border-color: var(--vz-border-color);">
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'home' %}" target="_blank" class="vz-nav-link">
+                    <i class="fas fa-globe vz-nav-icon"></i>
+                    Website
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="/admin/" target="_blank" class="vz-nav-link">
+                    <i class="fas fa-cog vz-nav-icon"></i>
+                    Admin
+                </a>
+            </div>
+            
+            <div class="vz-nav-item">
+                <a href="{% url 'crm:logout' %}" class="vz-nav-link">
+                    <i class="fas fa-sign-out-alt vz-nav-icon"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+        
+        <div class="vz-user-profile">
+            <div class="vz-avatar vz-avatar-sm">
+                {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|upper|default:'' }}
+            </div>
+            <div class="vz-user-info">
+                <div class="vz-user-name">{{ user.first_name|default:user.username }} {{ user.last_name }}</div>
+                <div class="vz-user-role">Administrator</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="vz-main">
+        <!-- Header -->
+        <div class="vz-header">
+            <div>
+                <h1 class="vz-page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                <p class="vz-page-subtitle">{% block page_subtitle %}Welcome back, {{ user.first_name|default:user.username }}!{% endblock %}</p>
+            </div>
+            <div class="vz-header-actions">
+                {% block header_actions %}{% endblock %}
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="vz-content">
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="vz-alert vz-alert-{{ message.tags }}">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-hide alerts after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.vz-alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
+        
+        // Mobile sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.vz-sidebar');
+            sidebar.classList.toggle('show');
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

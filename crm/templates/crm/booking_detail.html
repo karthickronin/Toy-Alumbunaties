@@ -1,0 +1,291 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}Booking Details{% endblock %}
+{% block page_title %}Booking Details{% endblock %}
+{% block page_subtitle %}{{ booking.customer.full_name }} - {{ booking.event_date|date:"M d, Y" }}{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'crm:booking_list' %}" class="btn grey waves-effect waves-light">
+    <i class="material-icons left">arrow_back</i>Back to Bookings
+</a>
+<a href="{% url 'crm:customer_detail' booking.customer.id %}" class="btn primary-color waves-effect waves-light">
+    <i class="material-icons left">person</i>View Customer
+</a>
+{% endblock %}
+
+{% block content %}
+<!-- Booking Overview -->
+<div class="row">
+    <div class="col s12 l8">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">event</i>Event Information
+                </span>
+                
+                <div class="row">
+                    <div class="col s12 m6">
+                        <div class="collection">
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">event</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Event Date</strong><br>
+                                        {{ booking.event_date|date:"F d, Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">schedule</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Event Time</strong><br>
+                                        {{ booking.event_time|time:"g:i A" }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">category</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Event Type</strong><br>
+                                        {{ booking.get_event_type_display }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">card_giftcard</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Package</strong><br>
+                                        <span class="chip 
+                                            {% if booking.package == 'silver' %}grey
+                                            {% elif booking.package == 'gold' %}amber
+                                            {% elif booking.package == 'diamond' %}blue
+                                            {% endif %} white-text">
+                                            {{ booking.get_package_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col s12 m6">
+                        <div class="collection">
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">flag</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Status</strong><br>
+                                        <span class="status-badge status-{{ booking.status }}">
+                                            {{ booking.get_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">payment</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Payment Status</strong><br>
+                                        <span class="status-badge 
+                                            {% if booking.payment_status == 'completed' %}status-completed
+                                            {% elif booking.payment_status == 'partial' %}status-quoted
+                                            {% else %}status-inquiry
+                                            {% endif %}">
+                                            {{ booking.get_payment_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">people</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Number of Children</strong><br>
+                                        {{ booking.number_of_children }} children
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="collection-item">
+                                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                                    <div class="col s3">
+                                        <i class="material-icons grey-text">child_care</i>
+                                    </div>
+                                    <div class="col s9">
+                                        <strong>Age Group</strong><br>
+                                        {{ booking.child_age_group }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="divider" style="margin: 24px 0;"></div>
+                <div class="row">
+                    <div class="col s12">
+                        <h6><i class="material-icons left">location_on</i>Venue Address</h6>
+                        <p class="grey-text">{{ booking.venue_address }}</p>
+                    </div>
+                </div>
+                
+                {% if booking.special_requests %}
+                <div class="divider" style="margin: 24px 0;"></div>
+                <div class="row">
+                    <div class="col s12">
+                        <h6><i class="material-icons left">note</i>Special Requests</h6>
+                        <p class="grey-text">{{ booking.special_requests }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col s12 l4">
+        <!-- Customer Info -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">person</i>Customer
+                </span>
+                
+                <div class="row valign-wrapper" style="margin-bottom: 16px;">
+                    <div class="col s3">
+                        <div class="avatar">
+                            {{ booking.customer.first_name.0|upper }}{{ booking.customer.last_name.0|upper }}
+                        </div>
+                    </div>
+                    <div class="col s9">
+                        <h6 style="margin: 0;">{{ booking.customer.full_name }}</h6>
+                        <p style="margin: 0;" class="grey-text">
+                            <i class="material-icons tiny">email</i> {{ booking.customer.email }}<br>
+                            <i class="material-icons tiny">phone</i> {{ booking.customer.phone }}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="center-align">
+                    <a href="{% url 'crm:customer_detail' booking.customer.id %}" class="btn primary-color waves-effect waves-light">
+                        <i class="material-icons left">visibility</i>View Customer
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pricing Info -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">attach_money</i>Pricing
+                </span>
+                
+                <div class="collection">
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8">Base Price</div>
+                            <div class="col s4 right-align">₹{{ booking.base_price|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    {% if booking.additional_charges > 0 %}
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8">Additional Charges</div>
+                            <div class="col s4 right-align">₹{{ booking.additional_charges|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if booking.discount > 0 %}
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8">Discount</div>
+                            <div class="col s4 right-align red-text">-₹{{ booking.discount|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8"><strong>Total Amount</strong></div>
+                            <div class="col s4 right-align"><strong>₹{{ booking.total_amount|floatformat:0 }}</strong></div>
+                        </div>
+                    </div>
+                    {% if booking.advance_paid > 0 %}
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8">Advance Paid</div>
+                            <div class="col s4 right-align green-text">₹{{ booking.advance_paid|floatformat:0 }}</div>
+                        </div>
+                    </div>
+                    <div class="collection-item">
+                        <div class="row valign-wrapper" style="margin-bottom: 0;">
+                            <div class="col s8"><strong>Balance Due</strong></div>
+                            <div class="col s4 right-align"><strong>₹{{ booking.balance_amount|floatformat:0 }}</strong></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if booking.assigned_performer %}
+        <!-- Assigned Performer -->
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">person_outline</i>Assigned Performer
+                </span>
+                <p>{{ booking.assigned_performer.first_name }} {{ booking.assigned_performer.last_name }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Tasks Related to Booking -->
+{% if tasks %}
+<div class="card">
+    <div class="card-content">
+        <span class="card-title">
+            <i class="material-icons left">assignment</i>Related Tasks
+        </span>
+        
+        <div class="collection">
+            {% for task in tasks %}
+            <div class="collection-item">
+                <div class="row valign-wrapper" style="margin-bottom: 0;">
+                    <div class="col s8">
+                        <strong>{{ task.title }}</strong>
+                        {% if task.description %}
+                            <br><small class="grey-text">{{ task.description|truncatewords:10 }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="col s4 right-align">
+                        <span class="status-badge status-{{ task.status }}">
+                            {{ task.get_status_display }}
+                        </span><br>
+                        <small class="grey-text">{{ task.due_date|date:"M d" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

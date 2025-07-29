@@ -1,0 +1,236 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'crm:customer_detail' customer.id %}" class="btn grey waves-effect waves-light">
+    <i class="material-icons left">arrow_back</i>Back to Customer
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 l8 offset-l2">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">chat</i>{{ title }}
+                </span>
+                
+                <!-- Customer Info -->
+                <div class="card-panel blue lighten-5">
+                    <div class="row valign-wrapper" style="margin-bottom: 0;">
+                        <div class="col s2">
+                            <div class="avatar">
+                                {{ customer.first_name.0|upper }}{{ customer.last_name.0|upper }}
+                            </div>
+                        </div>
+                        <div class="col s10">
+                            <h6 style="margin: 0;">{{ customer.full_name }}</h6>
+                            <p style="margin: 0;" class="grey-text">
+                                <i class="material-icons tiny">email</i> {{ customer.email }} &nbsp;&nbsp;
+                                <i class="material-icons tiny">phone</i> {{ customer.phone }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="section">
+                        <h6 class="primary-text">
+                            <i class="material-icons left">chat_bubble</i>Interaction Details
+                        </h6>
+                        <div class="divider" style="margin-bottom: 24px;"></div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">category</i>
+                                <select name="interaction_type" required>
+                                    <option value="" disabled selected>Choose Type</option>
+                                    <option value="call">📞 Phone Call</option>
+                                    <option value="email">📧 Email</option>
+                                    <option value="meeting">🤝 Meeting</option>
+                                    <option value="whatsapp">💬 WhatsApp</option>
+                                    <option value="sms">📱 SMS</option>
+                                    <option value="note">📝 Note</option>
+                                </select>
+                                <label>Interaction Type *</label>
+                            </div>
+                            
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">title</i>
+                                <input id="subject" name="subject" type="text" class="validate" required>
+                                <label for="subject">Subject *</label>
+                                <span class="helper-text">Brief subject of interaction</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">description</i>
+                                <textarea id="description" name="description" class="materialize-textarea" required></textarea>
+                                <label for="description">Description *</label>
+                                <span class="helper-text">Detailed description of the interaction...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">schedule</i>
+                                <input id="follow_up_date" name="follow_up_date" type="text" class="datepicker">
+                                <label for="follow_up_date">Follow-up Date (Optional)</label>
+                                <span class="helper-text">Set a reminder for follow-up</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Templates -->
+                    <div class="section">
+                        <h6 class="primary-text">
+                            <i class="material-icons left">quick_reference</i>Quick Templates
+                        </h6>
+                        <div class="divider" style="margin-bottom: 24px;"></div>
+                        
+                        <div class="row">
+                            <div class="col s12">
+                                <div class="chip waves-effect" onclick="fillTemplate('initial_contact')">
+                                    Initial Contact
+                                </div>
+                                <div class="chip waves-effect" onclick="fillTemplate('follow_up')">
+                                    Follow-up Call
+                                </div>
+                                <div class="chip waves-effect" onclick="fillTemplate('quote_sent')">
+                                    Quote Sent
+                                </div>
+                                <div class="chip waves-effect" onclick="fillTemplate('booking_confirmed')">
+                                    Booking Confirmed
+                                </div>
+                                <div class="chip waves-effect" onclick="fillTemplate('event_completed')">
+                                    Event Completed
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="section">
+                        <div class="row">
+                            <div class="col s12 center-align">
+                                <a href="{% url 'crm:customer_detail' customer.id %}" class="btn-large grey waves-effect waves-light">
+                                    <i class="material-icons left">cancel</i>Cancel
+                                </a>
+                                <button type="submit" class="btn-large primary-color waves-effect waves-light" style="margin-left: 16px;">
+                                    <i class="material-icons left">save</i>Save Interaction
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Interaction templates
+const templates = {
+    initial_contact: {
+        subject: 'Initial Contact - Event Inquiry',
+        description: 'Customer inquired about our event services. Discussed their requirements and provided initial information about our packages.'
+    },
+    follow_up: {
+        subject: 'Follow-up Call',
+        description: 'Called customer to follow up on their event inquiry. Discussed specific requirements and answered their questions.'
+    },
+    quote_sent: {
+        subject: 'Quote Sent',
+        description: 'Sent detailed quote for the requested event package. Explained pricing and included terms and conditions.'
+    },
+    booking_confirmed: {
+        subject: 'Booking Confirmed',
+        description: 'Customer confirmed the booking. Collected advance payment and scheduled the event details.'
+    },
+    event_completed: {
+        subject: 'Event Completed',
+        description: 'Successfully completed the event. Customer was satisfied with our services. Collected feedback and final payment.'
+    }
+};
+
+function fillTemplate(templateKey) {
+    const template = templates[templateKey];
+    if (template) {
+        document.getElementById('subject').value = template.subject;
+        document.getElementById('description').value = template.description;
+        
+        // Update labels
+        M.updateTextFields();
+        M.textareaAutoResize(document.getElementById('description'));
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize select elements
+    var selectElems = document.querySelectorAll('select');
+    M.FormSelect.init(selectElems);
+    
+    // Initialize datepicker
+    var datepickerElems = document.querySelectorAll('.datepicker');
+    M.Datepicker.init(datepickerElems, {
+        format: 'yyyy-mm-dd',
+        minDate: new Date(),
+        showClearBtn: true
+    });
+    
+    // Initialize character counter for textareas
+    var textareaElems = document.querySelectorAll('textarea');
+    M.CharacterCounter.init(textareaElems);
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('invalid');
+                
+                // Add error message if not exists
+                const errorMsg = field.parentNode.querySelector('.helper-text.red-text');
+                if (!errorMsg) {
+                    const helper = document.createElement('span');
+                    helper.className = 'helper-text red-text';
+                    helper.textContent = 'This field is required';
+                    field.parentNode.appendChild(helper);
+                }
+            } else {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+                
+                // Remove error message
+                const errorMsg = field.parentNode.querySelector('.helper-text.red-text');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            M.toast({html: 'Please fill in all required fields', classes: 'red'});
+        }
+    });
+    
+    // Auto-resize textarea
+    document.getElementById('description').addEventListener('input', function() {
+        M.textareaAutoResize(this);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,268 @@
+{% extends 'crm/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block header_actions %}
+<a href="{% url 'crm:customer_list' %}" class="btn grey waves-effect waves-light">
+    <i class="material-icons left">arrow_back</i>Back to List
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 l8 offset-l2">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <i class="material-icons left">person</i>{{ title }}
+                </span>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Basic Information -->
+                    <div class="section">
+                        <h6 class="primary-text">
+                            <i class="material-icons left">person_outline</i>Basic Information
+                        </h6>
+                        <div class="divider" style="margin-bottom: 24px;"></div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">person</i>
+                                <input id="first_name" name="first_name" type="text" class="validate" required
+                                       value="{% if customer %}{{ customer.first_name }}{% endif %}">
+                                <label for="first_name">First Name *</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <input id="last_name" name="last_name" type="text" class="validate" required
+                                       value="{% if customer %}{{ customer.last_name }}{% endif %}">
+                                <label for="last_name">Last Name *</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">email</i>
+                                <input id="email" name="email" type="email" class="validate" required
+                                       value="{% if customer %}{{ customer.email }}{% endif %}">
+                                <label for="email">Email Address *</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">phone</i>
+                                <input id="phone" name="phone" type="tel" class="validate" required
+                                       value="{% if customer %}{{ customer.phone }}{% endif %}">
+                                <label for="phone">Phone Number *</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">business</i>
+                                <input id="company" name="company" type="text"
+                                       value="{% if customer %}{{ customer.company|default:'' }}{% endif %}">
+                                <label for="company">Company (Optional)</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Address Information -->
+                    <div class="section">
+                        <h6 class="primary-text">
+                            <i class="material-icons left">location_on</i>Address Information
+                        </h6>
+                        <div class="divider" style="margin-bottom: 24px;"></div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">home</i>
+                                <textarea id="address" name="address" class="materialize-textarea">{% if customer %}{{ customer.address|default:'' }}{% endif %}</textarea>
+                                <label for="address">Full Address</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m4">
+                                <i class="material-icons prefix">location_city</i>
+                                <input id="city" name="city" type="text"
+                                       value="{% if customer %}{{ customer.city|default:'' }}{% endif %}">
+                                <label for="city">City</label>
+                            </div>
+                            <div class="input-field col s12 m4">
+                                <input id="state" name="state" type="text"
+                                       value="{% if customer %}{{ customer.state|default:'' }}{% endif %}">
+                                <label for="state">State</label>
+                            </div>
+                            <div class="input-field col s12 m4">
+                                <input id="pincode" name="pincode" type="text"
+                                       value="{% if customer %}{{ customer.pincode|default:'' }}{% endif %}">
+                                <label for="pincode">PIN Code</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- CRM Information -->
+                    <div class="section">
+                        <h6 class="primary-text">
+                            <i class="material-icons left">analytics</i>CRM Information
+                        </h6>
+                        <div class="divider" style="margin-bottom: 24px;"></div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">flag</i>
+                                <select name="status" required>
+                                    <option value="" disabled {% if not customer %}selected{% endif %}>Choose Status</option>
+                                    <option value="new" {% if customer and customer.status == 'new' %}selected{% endif %}>New Lead</option>
+                                    <option value="contacted" {% if customer and customer.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                                    <option value="qualified" {% if customer and customer.status == 'qualified' %}selected{% endif %}>Qualified</option>
+                                    <option value="proposal" {% if customer and customer.status == 'proposal' %}selected{% endif %}>Proposal Sent</option>
+                                    <option value="negotiation" {% if customer and customer.status == 'negotiation' %}selected{% endif %}>In Negotiation</option>
+                                    <option value="won" {% if customer and customer.status == 'won' %}selected{% endif %}>Won</option>
+                                    <option value="lost" {% if customer and customer.status == 'lost' %}selected{% endif %}>Lost</option>
+                                    <option value="existing" {% if customer and customer.status == 'existing' %}selected{% endif %}>Existing Customer</option>
+                                </select>
+                                <label>Customer Status</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <i class="material-icons prefix">source</i>
+                                <select name="lead_source" required>
+                                    <option value="" disabled {% if not customer %}selected{% endif %}>Choose Source</option>
+                                    <option value="website" {% if customer and customer.lead_source == 'website' %}selected{% endif %}>Website</option>
+                                    <option value="referral" {% if customer and customer.lead_source == 'referral' %}selected{% endif %}>Referral</option>
+                                    <option value="social_media" {% if customer and customer.lead_source == 'social_media' %}selected{% endif %}>Social Media</option>
+                                    <option value="phone" {% if customer and customer.lead_source == 'phone' %}selected{% endif %}>Phone Call</option>
+                                    <option value="email" {% if customer and customer.lead_source == 'email' %}selected{% endif %}>Email</option>
+                                    <option value="walk_in" {% if customer and customer.lead_source == 'walk_in' %}selected{% endif %}>Walk-in</option>
+                                    <option value="advertisement" {% if customer and customer.lead_source == 'advertisement' %}selected{% endif %}>Advertisement</option>
+                                    <option value="other" {% if customer and customer.lead_source == 'other' %}selected{% endif %}>Other</option>
+                                </select>
+                                <label>Lead Source</label>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">note</i>
+                                <textarea id="notes" name="notes" class="materialize-textarea">{% if customer %}{{ customer.notes|default:'' }}{% endif %}</textarea>
+                                <label for="notes">Notes</label>
+                                <span class="helper-text">Additional notes about the customer...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="section">
+                        <div class="row">
+                            <div class="col s12 center-align">
+                                <a href="{% url 'crm:customer_list' %}" class="btn-large grey waves-effect waves-light">
+                                    <i class="material-icons left">cancel</i>Cancel
+                                </a>
+                                <button type="submit" class="btn-large primary-color waves-effect waves-light" style="margin-left: 16px;">
+                                    <i class="material-icons left">save</i>Save Customer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize select elements
+    var selectElems = document.querySelectorAll('select');
+    M.FormSelect.init(selectElems);
+    
+    // Initialize character counter for textareas
+    var textareaElems = document.querySelectorAll('textarea');
+    M.CharacterCounter.init(textareaElems);
+    
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('input[required], select[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('invalid');
+                
+                // Add error message if not exists
+                const errorMsg = field.parentNode.querySelector('.helper-text.red-text');
+                if (!errorMsg) {
+                    const helper = document.createElement('span');
+                    helper.className = 'helper-text red-text';
+                    helper.textContent = 'This field is required';
+                    field.parentNode.appendChild(helper);
+                }
+            } else {
+                field.classList.remove('invalid');
+                field.classList.add('valid');
+                
+                // Remove error message
+                const errorMsg = field.parentNode.querySelector('.helper-text.red-text');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            M.toast({html: 'Please fill in all required fields', classes: 'red'});
+        }
+    });
+    
+    // Email validation
+    const emailField = document.getElementById('email');
+    emailField.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (this.value && !emailRegex.test(this.value)) {
+            this.classList.add('invalid');
+            let errorMsg = this.parentNode.querySelector('.helper-text.red-text');
+            if (!errorMsg) {
+                errorMsg = document.createElement('span');
+                errorMsg.className = 'helper-text red-text';
+                this.parentNode.appendChild(errorMsg);
+            }
+            errorMsg.textContent = 'Please enter a valid email address';
+        } else {
+            this.classList.remove('invalid');
+            const errorMsg = this.parentNode.querySelector('.helper-text.red-text');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
+        }
+    });
+    
+    // Phone validation
+    const phoneField = document.getElementById('phone');
+    phoneField.addEventListener('blur', function() {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        if (this.value && !phoneRegex.test(this.value.replace(/\s/g, ''))) {
+            this.classList.add('invalid');
+            let errorMsg = this.parentNode.querySelector('.helper-text.red-text');
+            if (!errorMsg) {
+                errorMsg = document.createElement('span');
+                errorMsg.className = 'helper-text red-text';
+                this.parentNode.appendChild(errorMsg);
+            }
+            errorMsg.textContent = 'Please enter a valid phone number';
+        } else {
+            this.classList.remove('invalid');
+            const errorMsg = this.parentNode.querySelector('.helper-text.red-text');
+            if (errorMsg) {
+                errorMsg.remove();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

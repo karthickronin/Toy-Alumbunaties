@@ -1,0 +1,328 @@
+{% extends 'events/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section with Video Background -->
+<section class="hero-section">
+    <!-- Background Video -->
+    <div class="hero-video-container">
+        
+    </div>
+    
+    <!-- Video Overlay -->
+    <div class="hero-overlay">
+        <video class="hero-video" autoplay muted loop playsinline>
+        <source src="{% static 'teddy.mp4' %}" type="video/mp4">
+        <source src="static\Teddy.webm" type="video/webm">
+        <!-- Fallback image if video doesn't load -->
+        <img src="static\logo.png" alt="Toy Alumbunaties Background">
+    </video>
+</div>
+    
+    <!-- Video Controls (Optional) -->
+    <div class="video-controls">
+        <button class="video-toggle-btn" id="videoToggle" aria-label="Play/Pause Video">
+            <i class="fas fa-pause"></i>
+        </button>
+        <button class="video-sound-btn" id="soundToggle" aria-label="Mute/Unmute Video">
+            <i class="fas fa-volume-mute"></i>
+        </button>
+    </div>
+    
+    <!-- Hero Content -->
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-title" data-aos="fade-up">
+                        Welcome to <span class="text-script">Toy Alumbunaties</span> 🎭
+                    </h1>
+                    <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+                        Bringing smiles, laughter, and magical entertainment to kids' events with our amazing character shows and interactive performances!
+                    </p>
+                    <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Book Your Event 🎉</a>
+                        <a href="{% url 'gallery' %}" class="btn btn-outline-light btn-lg">See Our Shows 📸</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="hero-scroll">
+        <a href="#about-preview">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<!-- About Preview Section -->
+<section id="about-preview" class="about-preview-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-image">
+                    <img src="static\IMG_2369.jpg" alt="Toy Alumbunaties Character Show" class="img-fluid rounded-3">
+                    <div class="experience-badge">
+                        <span class="experience-number">3+</span>
+                        <span class="experience-text">Years of Fun</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="about-content">
+                    <h2 class="section-title">
+                        Creating <span class="text-script">Magical</span> Moments 🎪
+                    </h2>
+                    <p class="section-description">
+                        Toy Alumbunaties specializes in bringing joy and excitement to children's events through our amazing character performances, interactive entertainment, and engaging activities. We make every celebration unforgettable!
+                    </p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <i class="fas fa-mask text-pink"></i>
+                            <span>Character Performances</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-gamepad text-gold"></i>
+                            <span>Interactive Games</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-smile text-blue"></i>
+                            <span>Guaranteed Smiles</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'about' %}" class="btn btn-primary mt-4">Learn More About Us 🎭</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Preview Section -->
+<section class="services-preview-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title" data-aos="fade-up">
+                    Our <span class="text-script">Amazing</span> Services 🎪
+                </h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">
+                    From birthday parties to school events, we bring joy and entertainment to children of all ages with our fantastic character shows and interactive activities
+                </p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="{{ service.icon }}"></i>
+                    </div>
+                    <h4>{{ service.title }}</h4>
+                    <p>{{ service.description }}</p>
+                    <a href="{% url 'services' %}" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Preview Section -->
+<section class="gallery-preview-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title" data-aos="fade-up">
+                    Our <span class="text-script">Fun</span> Gallery 📸
+                </h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">
+                    Check out some amazing moments from our character shows and see the joy we bring to every event!
+                </p>
+            </div>
+        </div>
+        
+        <div class="row gallery-grid">
+            {% for item in featured_gallery %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter|add:0 }}00">
+                <div class="gallery-item position-relative">
+                    <!-- Media Type Badge -->
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75" style="z-index: 3;">
+                        {% if item.type == 'video' %}📹 Video{% else %}📸 Photo{% endif %}
+                    </span>
+                    
+                    {% if item.type == 'image' %}
+                        <!-- Image Display -->
+                        <img src="{{ item.media_url }}" alt="{{ item.title }}" class="img-fluid" style="width: 100%; height: 300px; object-fit: cover;">
+                    {% elif item.type == 'video' %}
+                        <!-- Video Display with Hover Play -->
+                        <video class="img-fluid hover-video" 
+                               style="width: 100%; height: 300px; object-fit: cover;" 
+                               preload="metadata" 
+                               muted 
+                               loop
+                               onmouseover="this.play()" 
+                               onmouseout="this.pause(); this.currentTime=0;">
+                            <source src="{{ item.media_url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <!-- Play Icon for Videos (fades on hover) -->
+                        <div class="position-absolute top-50 start-50 translate-middle hover-play-icon" style="z-index: 2; transition: opacity 0.3s ease;">
+                            <i class="fas fa-play-circle text-white" style="font-size: 3rem; opacity: 0.8;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="gallery-overlay">
+                        <div class="gallery-content">
+                            <h5>{{ item.title }}</h5>
+                            <p>{{ item.category|title }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'gallery' %}" class="btn btn-primary btn-lg" data-aos="fade-up">View Full Gallery</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title" data-aos="fade-up">
+                    What Our <span class="text-script">Happy Families</span> Say 😊
+                </h2>
+                <p class="section-description" data-aos="fade-up" data-aos-delay="200">
+                    Don't just take our word for it - hear from parents and kids who loved our shows!
+                </p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for testimonial in testimonials %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            {% for i in "12345"|slice:":"|slice:testimonial.rating %}
+                            <i class="fas fa-star"></i>
+                            {% endfor %}
+                        </div>
+                        <p>"{{ testimonial.message }}"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="{{ testimonial.client_name }}" class="author-image">
+                        <div class="author-info">
+                            <h6>{{ testimonial.client_name }}</h6>
+                            <span>Happy Client</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="cta-title" data-aos="fade-up">
+                    Ready to Book Your <span class="text-script">Amazing</span> Event? 🎉
+                </h2>
+                <p class="cta-description" data-aos="fade-up" data-aos-delay="200">
+                    Let's bring joy and smiles to your special celebration! Contact us today to book our fantastic character shows and entertainment.
+                </p>
+                <div class="cta-buttons" data-aos="fade-up" data-aos-delay="400">
+                    <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Book Now 🎭</a>
+                    <a href="tel:+919360895326" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-phone me-2"></i>Call Deepak
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.querySelector('.hero-video');
+    const videoToggle = document.getElementById('videoToggle');
+    const soundToggle = document.getElementById('soundToggle');
+    
+    if (video && videoToggle && soundToggle) {
+        // Video play/pause functionality
+        videoToggle.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                videoToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                videoToggle.setAttribute('aria-label', 'Pause Video');
+            } else {
+                video.pause();
+                videoToggle.innerHTML = '<i class="fas fa-play"></i>';
+                videoToggle.setAttribute('aria-label', 'Play Video');
+            }
+        });
+        
+        // Sound toggle functionality
+        soundToggle.addEventListener('click', function() {
+            if (video.muted) {
+                video.muted = false;
+                soundToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+                soundToggle.setAttribute('aria-label', 'Mute Video');
+            } else {
+                video.muted = true;
+                soundToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                soundToggle.setAttribute('aria-label', 'Unmute Video');
+            }
+        });
+        
+        // Handle video loading errors
+       video.addEventListener('error', function() {
+            console.log('Video failed to load, showing fallback image');
+            const videoContainer = document.querySelector('.hero-video-container');
+            if (videoContainer) {
+                videoContainer.style.backgroundImage = 'url("https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")';
+                videoContainer.style.backgroundSize = 'cover';
+                videoContainer.style.backgroundPosition = 'center';
+            }
+            // Hide video controls if video fails
+            const controls = document.querySelector('.video-controls');
+            if (controls) {
+                controls.style.display = 'none';
+            }
+        });
+        
+        // Auto-hide controls after 3 seconds of no interaction
+        let controlsTimeout;
+        const controls = document.querySelector('.video-controls');
+        
+        function showControls() {
+            if (controls) {
+                controls.style.opacity = '1';
+                clearTimeout(controlsTimeout);
+                controlsTimeout = setTimeout(() => {
+                    controls.style.opacity = '0.7';
+                }, 3000);
+            }
+        }
+        
+        // Show controls on mouse movement
+        document.querySelector('.hero-section').addEventListener('mousemove', showControls);
+        
+        // Initial setup
+        showControls();
+    }
+});
+</script>
+{% endblock %}
