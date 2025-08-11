@@ -1,0 +1,40 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}Portfolio Project - Admire{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">Project: {{ slug|title }}</h1>
+                <p class="lead text-muted">
+                    Case study for {{ slug }} project.
+                </p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-body p-5">
+                        <h3 class="mb-4">Project Details</h3>
+                        <p>This page will contain detailed case study information for the {{ slug }} project.</p>
+                        <p>Content will be dynamically loaded from the database once models are implemented.</p>
+                        
+                        <div class="mt-4">
+                            <a href="{% url 'website:contact' %}" class="btn btn-primary">
+                                Start Your Project
+                            </a>
+                            <a href="{% url 'website:portfolio' %}" class="btn btn-outline-secondary ms-2">
+                                Back to Portfolio
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

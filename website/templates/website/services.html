@@ -1,0 +1,159 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}Services - Admire{% endblock %}
+
+{% block content %}
+<!-- Services Hero -->
+<section class="section-large" style="padding-top: 120px;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h1 style="font-size: 3rem; font-weight: 300; margin-bottom: 1rem;">Our Services</h1>
+            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">
+                We combine creative vision with technical expertise to deliver comprehensive solutions that elevate brands and drive results.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="section">
+    <div class="container">
+        <div class="grid grid-2" style="gap: 3rem;">
+            {% for service in services %}
+            <div class="card">
+                {% if service.icon %}
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{{ service.icon.url }}" alt="{{ service.title }}" style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
+                {% endif %}
+                <div class="card-content">
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description|truncatewords:30 }}</p>
+                    <a href="{{ service.get_absolute_url }}" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default services if none exist in database -->
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/brand-identity.svg' %}" alt="Brand Identity" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>Brand Identity</h3>
+                    <p>We create distinctive visual identities that capture the essence of your brand and resonate with your target audience. From logo design to comprehensive brand guidelines, we ensure consistency across all touchpoints.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/web-development.svg' %}" alt="Web Development" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>Web Development</h3>
+                    <p>Building modern, responsive websites and applications that deliver exceptional user experiences. We focus on performance, accessibility, and scalability to ensure your digital presence stands out.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/digital-marketing.svg' %}" alt="Digital Marketing" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>Digital Marketing</h3>
+                    <p>Strategic digital campaigns that drive engagement, build communities, and deliver measurable results. We combine creativity with data-driven insights to maximize your marketing ROI.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/it-solutions.svg' %}" alt="IT Solutions" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>IT Solutions</h3>
+                    <p>Comprehensive technology solutions that streamline operations and drive innovation. From system integration to custom software development, we help businesses leverage technology effectively.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/strategy.svg' %}" alt="Strategy & Consulting" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>Strategy & Consulting</h3>
+                    <p>Strategic guidance to help brands navigate the digital landscape. We provide insights, recommendations, and roadmaps that align technology and creativity with business objectives.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div style="padding: 2rem 2rem 0;">
+                    <img src="{% static 'images/icons/creative-direction.svg' %}" alt="Creative Direction" style="width: 60px; height: 60px;">
+                </div>
+                <div class="card-content">
+                    <h3>Creative Direction</h3>
+                    <p>End-to-end creative direction for campaigns, products, and brand experiences. We ensure every creative decision supports your brand story and business goals.</p>
+                    <a href="#" style="color: #000; text-decoration: none; font-weight: 500;">Learn More →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Process Section -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>Our Process</h2>
+            <p style="font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
+                Every project follows our proven methodology to ensure exceptional results and seamless collaboration.
+            </p>
+        </div>
+        
+        <div class="grid grid-4">
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem; font-weight: 300;">1</div>
+                <h3 style="font-size: 1.2rem;">Discovery</h3>
+                <p style="font-size: 0.95rem;">Understanding your brand, goals, and target audience through comprehensive research and strategy sessions.</p>
+            </div>
+            
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem; font-weight: 300;">2</div>
+                <h3 style="font-size: 1.2rem;">Strategy</h3>
+                <p style="font-size: 0.95rem;">Developing a tailored approach that aligns creative vision with business objectives and market opportunities.</p>
+            </div>
+            
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem; font-weight: 300;">3</div>
+                <h3 style="font-size: 1.2rem;">Execution</h3>
+                <p style="font-size: 0.95rem;">Bringing ideas to life through meticulous design, development, and implementation with regular feedback loops.</p>
+            </div>
+            
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.5rem; font-weight: 300;">4</div>
+                <h3 style="font-size: 1.2rem;">Launch</h3>
+                <p style="font-size: 0.95rem;">Delivering polished results with ongoing support to ensure your project achieves its full potential.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section">
+    <div class="container text-center">
+        <h2>Ready to Get Started?</h2>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Let's discuss your project and explore how our services can help achieve your goals.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'website:contact' %}" class="cta-button">Start a Project</a>
+            <a href="{% url 'website:portfolio' %}" class="cta-button" style="background: transparent; color: #000; border: 1px solid #000;">View Our Work</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+# Image Placeholders
+
+This directory will contain:
+- portfolio-1.jpg
+- portfolio-2.jpg  
+- portfolio-3.jpg
+- portfolio-placeholder.jpg
+- about-placeholder.jpg
+
+For now, these are text placeholders. In production, replace with actual images.

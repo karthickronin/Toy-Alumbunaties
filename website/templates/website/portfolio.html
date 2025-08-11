@@ -1,0 +1,145 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}Portfolio - Admire{% endblock %}
+
+{% block content %}
+<!-- Portfolio Hero -->
+<section class="section-large" style="padding-top: 120px;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h1 style="font-size: 3rem; font-weight: 300; margin-bottom: 1rem;">Our Work</h1>
+            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">
+                A showcase of our recent projects and the brands we've helped transform through strategic design and innovative technology.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Navigation -->
+<section style="padding: 2rem 0; background: #f5f5f5; border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5;">
+    <div class="container">
+        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+            <a href="{% url 'website:portfolio' %}" 
+               class="filter-link {% if not current_category %}active{% endif %}"
+               style="color: {% if not current_category %}#000{% else %}#666{% endif %}; text-decoration: none; font-weight: {% if not current_category %}500{% else %}400{% endif %}; padding: 0.5rem 1rem; border-bottom: {% if not current_category %}2px solid #000{% else %}2px solid transparent{% endif %}; transition: all 0.3s ease;">
+                All Work
+            </a>
+            {% for category_key, category_name in categories %}
+            <a href="{% url 'website:portfolio' %}?category={{ category_key }}" 
+               class="filter-link {% if current_category == category_key %}active{% endif %}"
+               style="color: {% if current_category == category_key %}#000{% else %}#666{% endif %}; text-decoration: none; font-weight: {% if current_category == category_key %}500{% else %}400{% endif %}; padding: 0.5rem 1rem; border-bottom: {% if current_category == category_key %}2px solid #000{% else %}2px solid transparent{% endif %}; transition: all 0.3s ease;">
+                {{ category_name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Grid -->
+<section class="section">
+    <div class="container">
+        <div class="portfolio-grid">
+            {% for project in projects %}
+            {% if project.featured_image %}
+            <div class="portfolio-item">
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">{{ project.title }}</h3>
+                    {% if project.client %}
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">{{ project.client }}</p>
+                    {% endif %}
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">{{ project.get_category_display }}</p>
+                    <a href="{{ project.get_absolute_url }}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <!-- Sample portfolio projects with images -->
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-1.svg' %}" alt="Brand Identity Project">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Brand Identity</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">Tech Startup</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">Branding</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-2.svg' %}" alt="E-commerce Platform">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">E-commerce Platform</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">Fashion Retailer</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">Web Development</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-3.svg' %}" alt="Digital Campaign">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Digital Campaign</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">Global Brand</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">Advertising</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-4.svg' %}" alt="Mobile App">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Mobile App</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">FinTech Startup</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">IT Solutions</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-1.svg' %}" alt="Brand Strategy">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Brand Strategy</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">Healthcare Company</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">Design</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-2.svg' %}" alt="Corporate Website">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Corporate Website</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 0.5rem; font-size: 0.9rem;">Professional Services</p>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 0.85rem;">Web Development</p>
+                    <a href="#" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container text-center">
+        <h2>Like What You See?</h2>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Let's create something exceptional together. Every great project starts with a conversation.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'website:contact' %}" class="cta-button">Start Your Project</a>
+            <a href="{% url 'website:services' %}" class="cta-button" style="background: transparent; color: #000; border: 1px solid #000;">View Services</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.filter-link:hover {
+    color: #000 !important;
+    border-bottom-color: #000 !important;
+}
+</style>
+{% endblock %}

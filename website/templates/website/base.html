@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admire - Brand for Brands{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block description %}Admire is a modern ad agency and IT company. We are Brand for Brands, creating exceptional digital experiences and innovative solutions.{% endblock %}">
+    <meta name="keywords" content="advertising, branding, web development, IT solutions, digital marketing">
+    <meta name="author" content="Admire Agency">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="{% block og_title %}Admire - Brand for Brands{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Modern ad agency and IT company creating exceptional digital experiences.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{% load static %}{% static 'images/og-image.jpg' %}{% endblock %}">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Admire - Brand for Brands{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Modern ad agency and IT company creating exceptional digital experiences.{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'images/favicon.ico' %}">
+    
+    <!-- Stylesheets -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="{% url 'website:home' %}" class="logo">
+                <span class="logo-ad">Ad</span><span class="logo-mire">mire</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'website:home' %}">Home</a></li>
+                <li><a href="{% url 'website:services' %}">Services</a></li>
+                <li><a href="{% url 'website:portfolio' %}">Work</a></li>
+                <li><a href="{% url 'website:about' %}">About</a></li>
+                <li><a href="{% url 'website:contact' %}">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="social-links">
+                <a href="mailto:founder.admire@gmail.com">Email</a>
+                <a href="https://instagram.com/admire.brand" target="_blank">Instagram</a>
+            </div>
+            <p>&copy; 2025 Admire. Brand for Brands.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .service-card, .portfolio-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

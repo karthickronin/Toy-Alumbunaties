@@ -1,0 +1,179 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}Admire - Brand for Brands{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-logo">
+                <span class="logo-ad">Ad</span><span class="logo-mire">mire</span>
+            </h1>
+            <p class="tagline">Brand for Brands</p>
+            <p style="font-size: 1.1rem; color: #cccccc; margin-bottom: 3rem; font-weight: 300;">
+                We create exceptional digital experiences and innovative solutions that elevate brands to new heights.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{% url 'website:contact' %}" class="cta-button">Start a Project</a>
+                <a href="{% url 'website:portfolio' %}" class="cta-button outline">View Our Work</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Preview -->
+<section class="section services">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>What We Do</h2>
+            <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                We combine creative vision with technical expertise to deliver comprehensive solutions for modern brands.
+            </p>
+        </div>
+        
+        <div class="grid grid-3">
+            {% for service in featured_services %}
+            <div class="service-card">
+                <div class="service-icon">
+                    {% if service.icon %}
+                        <img src="{{ service.icon.url }}" alt="{{ service.title }}" style="width: 30px; height: 30px;">
+                    {% else %}
+                        <span>⚡</span>
+                    {% endif %}
+                </div>
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.short_description|default:service.description|truncatewords:20 }}</p>
+                <a href="{{ service.get_absolute_url }}" style="color: #000; text-decoration: none; font-weight: 500; font-size: 0.9rem;">Learn More →</a>
+            </div>
+            {% empty %}
+            <!-- Default services if none exist -->
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="{% static 'images/icons/brand-identity.svg' %}" alt="Brand Identity" style="width: 60px; height: 60px;">
+                </div>
+                <h3>Brand Identity</h3>
+                <p>Creating distinctive visual identities that capture the essence of your brand and resonate with your audience.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="{% static 'images/icons/web-development.svg' %}" alt="Web Development" style="width: 60px; height: 60px;">
+                </div>
+                <h3>Web Development</h3>
+                <p>Building modern, responsive websites and applications that deliver exceptional user experiences.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="{% static 'images/icons/digital-marketing.svg' %}" alt="Digital Marketing" style="width: 60px; height: 60px;">
+                </div>
+                <h3>Digital Marketing</h3>
+                <p>Strategic digital campaigns that drive engagement, build communities, and deliver measurable results.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Portfolio -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>Selected Work</h2>
+            <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                A showcase of our recent projects and the brands we've helped transform.
+            </p>
+        </div>
+        
+        <div class="portfolio-grid">
+            {% for project in featured_portfolio %}
+            {% if project.featured_image %}
+            <div class="portfolio-item">
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">{{ project.title }}</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-size: 0.9rem;">{{ project.client }}</p>
+                    <a href="{{ project.get_absolute_url }}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            {% endif %}
+            {% empty %}
+            <!-- Sample portfolio items with images -->
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-1.svg' %}" alt="Brand Identity Project">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Brand Identity</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-size: 0.9rem;">Tech Startup</p>
+                    <a href="{% url 'website:portfolio' %}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-2.svg' %}" alt="E-commerce Platform">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">E-commerce Platform</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-size: 0.9rem;">Fashion Retailer</p>
+                    <a href="{% url 'website:portfolio' %}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-3.svg' %}" alt="Digital Campaign">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Digital Campaign</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-size: 0.9rem;">Global Brand</p>
+                    <a href="{% url 'website:portfolio' %}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="{% static 'images/portfolio-4.svg' %}" alt="Mobile App">
+                <div class="portfolio-overlay">
+                    <h3 style="color: white; margin-bottom: 0.5rem;">Mobile App</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem; font-size: 0.9rem;">FinTech Startup</p>
+                    <a href="{% url 'website:portfolio' %}" style="color: white; text-decoration: none; font-weight: 500;">View Project →</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'website:portfolio' %}" class="cta-button" style="background: transparent; color: #000; border: 1px solid #000;">View All Work</a>
+        </div>
+    </div>
+</section>
+
+<!-- About Preview -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container">
+        <div class="grid grid-2" style="align-items: center;">
+            <div>
+                <h2>Brand for Brands</h2>
+                <p style="font-size: 1.1rem; line-height: 1.7;">
+                    At Admire, we understand that every brand has a unique story to tell. We're not just another agency – we're brand builders, storytellers, and digital craftspeople who believe in the power of exceptional design and innovative technology.
+                </p>
+                <p style="font-size: 1.1rem; line-height: 1.7;">
+                    Our approach combines strategic thinking with creative execution, ensuring that every project we touch becomes a testament to what's possible when vision meets expertise.
+                </p>
+                <a href="{% url 'website:about' %}" style="color: #000; text-decoration: none; font-weight: 500;">Learn About Us →</a>
+            </div>
+            <div style="text-align: center;">
+                <div style="width: 300px; height: 300px; background: linear-gradient(135deg, #000 0%, #333 100%); margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: 300;">
+                    Admire
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact CTA -->
+<section class="section">
+    <div class="container text-center">
+        <h2>Ready to Start?</h2>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Let's discuss your project and explore how we can help bring your vision to life.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'website:contact' %}" class="cta-button">Get in Touch</a>
+            <a href="mailto:founder.admire@gmail.com" class="cta-button" style="background: transparent; color: #000; border: 1px solid #000;">Email Us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

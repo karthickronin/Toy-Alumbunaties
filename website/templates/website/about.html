@@ -1,0 +1,142 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block title %}About - Admire{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="section-large" style="padding-top: 120px;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h1 style="font-size: 3rem; font-weight: 300; margin-bottom: 1rem;">Brand for Brands</h1>
+            <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto;">
+                We are Admire – a modern agency where creativity meets technology, and where every brand story becomes an extraordinary experience.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="section">
+    <div class="container">
+        <div class="grid grid-2" style="align-items: center; gap: 4rem;">
+            <div>
+                <h2>Our Mission</h2>
+                <div style="font-size: 1.1rem; line-height: 1.7; color: #666;">
+                    {{ mission_content|linebreaks }}
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <div style="width: 350px; height: 350px; background: linear-gradient(135deg, #000 0%, #333 100%); margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 300; border-radius: 8px;">
+                    Admire
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>What Drives Us</h2>
+            <p style="font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
+                Our core values shape every decision we make and every project we undertake.
+            </p>
+        </div>
+        
+        <div class="grid grid-3">
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.8rem;">🎯</div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">Purpose-Driven</h3>
+                <p>Every project has a purpose. We dig deep to understand the 'why' behind your brand and ensure every creative decision serves that purpose.</p>
+            </div>
+            
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.8rem;">⚡</div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">Innovation First</h3>
+                <p>We embrace cutting-edge technology and creative approaches to deliver solutions that are not just current, but future-ready.</p>
+            </div>
+            
+            <div class="text-center">
+                <div style="width: 80px; height: 80px; background: #000; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 1.8rem;">🤝</div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem;">Partnership</h3>
+                <p>We don't just work for our clients – we work with them. True collaboration leads to extraordinary results that exceed expectations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+{% if team_members %}
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>Meet the Team</h2>
+            <p style="font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
+                The creative minds and technical experts behind every Admire project.
+            </p>
+        </div>
+        
+        <div class="team-grid">
+            {% for member in team_members %}
+            <div class="team-member">
+                {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="team-photo">
+                {% else %}
+                    <img src="{% static 'images/team-placeholder.svg' %}" alt="{{ member.name }}" class="team-photo">
+                {% endif %}
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">{{ member.name }}</h3>
+                <p style="color: #666; margin-bottom: 1rem; font-weight: 500;">{{ member.position }}</p>
+                <p style="font-size: 0.95rem; line-height: 1.6;">{{ member.bio|truncatewords:25 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Approach Section -->
+<section class="section" style="background: #f5f5f5;">
+    <div class="container">
+        <div class="text-center mb-3">
+            <h2>Our Approach</h2>
+            <p style="font-size: 1.1rem; color: #666; max-width: 600px; margin: 0 auto;">
+                How we transform ideas into impactful brand experiences.
+            </p>
+        </div>
+        
+        <div class="grid grid-2" style="gap: 3rem;">
+            <div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Strategic Foundation</h3>
+                <p style="margin-bottom: 1.5rem;">We start every project with deep research and strategic thinking. Understanding your market, audience, and objectives allows us to create solutions that are not just beautiful, but effective.</p>
+                
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Creative Excellence</h3>
+                <p>Our creative process combines intuition with methodology. We explore multiple directions, iterate rapidly, and refine relentlessly until we achieve something truly exceptional.</p>
+            </div>
+            
+            <div>
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Technical Mastery</h3>
+                <p style="margin-bottom: 1.5rem;">We leverage the latest technologies and best practices to ensure your brand experience is fast, accessible, and scalable. Technical excellence is never an afterthought.</p>
+                
+                <h3 style="font-size: 1.4rem; margin-bottom: 1rem;">Continuous Partnership</h3>
+                <p>Our relationship doesn't end at launch. We provide ongoing support, optimization, and strategic guidance to help your brand continue to evolve and grow.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section">
+    <div class="container text-center">
+        <h2>Ready to Work Together?</h2>
+        <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            Every great partnership starts with a conversation. Let's explore what we can create together.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'website:contact' %}" class="cta-button">Start a Conversation</a>
+            <a href="{% url 'website:portfolio' %}" class="cta-button" style="background: transparent; color: #000; border: 1px solid #000;">See Our Work</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

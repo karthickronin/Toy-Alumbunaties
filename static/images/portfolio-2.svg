@@ -1,0 +1,12 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#f5576c;stop-opacity:1" />
+</linearGradient>
+</defs>
+<rect width="400" height="300" fill="url(#grad2)"/>
+<text x="200" y="130" font-family="Arial, sans-serif" font-size="24" font-weight="300" fill="white" text-anchor="middle">E-commerce Platform</text>
+<text x="200" y="160" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.8)" text-anchor="middle">Fashion Retailer</text>
+<text x="200" y="190" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.6)" text-anchor="middle">Custom web application</text>
+</svg>
