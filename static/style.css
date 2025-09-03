@@ -2,18 +2,18 @@
 
 /* Root Variables - Toy Alumbunaties Theme */
 :root {
-    --primary-color: #4A102A;
-    --secondary-color: #FCF259;
-    --accent-color: #C5172E;
-    --text-dark: #4A102A;
-    --text-light: #85193C;
+    --primary-color: #640D5F;
+    --secondary-color: #FFB200;
+    --accent-color: #D91656;
+    --text-dark: #640D5F;
+    --text-light: #EB5B00;
     --white: #ffffff;
-    --pink: #C5172E;
-    --gold: #FCF259;
-    --blue: #85193C;
-    --green: #C5172E;
-    --purple: #4A102A;
-    --orange: #FCF259;
+    --pink: #D91656;
+    --gold: #FFB200;
+    --blue: #EB5B00;
+    --green: #D91656;
+    --purple: #640D5F;
+    --orange: #EB5B00;
     
     --font-primary: 'Poppins', sans-serif;
     --font-script: 'Dancing Script', cursive;
