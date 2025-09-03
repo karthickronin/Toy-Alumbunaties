@@ -1,0 +1,42 @@
+# GitHub Pages Configuration for Toy Alumbunaties
+title: "Toy Alumbunaties - Kids Entertainment & Character Shows"
+description: "Bringing smiles, laughter, and magical entertainment to kids' events with amazing character shows and interactive performances!"
+
+# GitHub Pages settings
+theme: null
+plugins: []
+
+# Custom domain (optional - uncomment and set your domain)
+# url: "https://yourdomain.com"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+  - .jekyll-metadata
+
+# Include files
+include:
+  - _pages
+  - assets
+  - static
+
+# Collections
+collections_dir: collections
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"

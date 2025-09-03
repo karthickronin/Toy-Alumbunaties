@@ -15,7 +15,7 @@ from .models import Customer, EventBooking, Interaction, Task, Quote
 def dashboard(request):
     """Main CRM Dashboard"""
     # Get date range for filtering (last 30 days by default)
-    end_date = timezone.now().date()
+    end_date = timezone.now().date(
     start_date = end_date - timedelta(days=30)
     
     # Key metrics
