@@ -28,8 +28,41 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css" />
+    
+    <script>
+      // Preload video and hide loading screen
+      document.addEventListener('DOMContentLoaded', function() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const heroVideo = document.getElementById('heroVideo');
+        
+        function hideLoadingScreen() {
+          loadingScreen.classList.add('fade-out');
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            heroVideo.play();
+          }, 500);
+        }
+        
+        // Check if video can play
+        if (heroVideo.readyState >= 3) {
+          hideLoadingScreen();
+        } else {
+          heroVideo.addEventListener('canplaythrough', hideLoadingScreen);
+          // Fallback timeout in case video fails to load
+          setTimeout(hideLoadingScreen, 5000);
+        }
+      });
+    </script>
   </head>
   <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-content">
+        <img src="static/logo.png" alt="Toy Alumbunaties" class="loading-logo">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading magical moments...</p>
+      </div>
+    </div>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
@@ -84,7 +117,7 @@
     
     <!-- Video Overlay -->
     <div class="hero-overlay">
-        <video class="hero-video" autoplay muted loop playsinline>
+        <video id="heroVideo" class="hero-video" muted loop playsinline preload="auto">
         <source src="static/teddy.mp4" type="video/mp4">
         <source src="static/Teddy.webm" type="video/webm">
         <!-- Fallback image if video doesn't load -->
