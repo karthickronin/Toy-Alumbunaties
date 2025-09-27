@@ -482,6 +482,16 @@
         margin-bottom: var(--space-8);
         letter-spacing: -0.025em;
       }
+      
+      #rotating-text::after {
+        content: '|';
+        animation: blink 1s infinite;
+      }
+      
+      @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+      }
 
       .hero-description {
         font-size: var(--text-lg);
@@ -1187,7 +1197,7 @@
         <div class="hero-grid fade-in">
           <div class="hero-content">
             <h1>KARTHICK S</h1>
-            <div class="hero-subtitle">Full Stack Developer</div>
+            <div class="hero-subtitle"><span id="rotating-text">Python Full Stack Developer</span></div>
             <p class="hero-description">
               Motivated Software Developer with 1 year of professional experience in software development. Eager to apply technical skills and practical experience to contribute to innovative projects in a dynamic environment.
             </p>
@@ -1860,31 +1870,39 @@
         }
       });
 
-      // Typing animation for hero title
-      const heroTitle = document.querySelector(".hero-content h1");
-      const text = heroTitle.textContent;
-      heroTitle.textContent = "";
-
-      let i = 0;
-      const typeWriter = () => {
-        if (i < text.length) {
-          heroTitle.textContent += text.charAt(i);
-          i++;
-          setTimeout(typeWriter, 100);
+      // Typewriter effect for developer roles
+      const rotatingText = document.getElementById('rotating-text');
+      const texts = ['Python Full Stack Developer', 'React Developer', 'Node.js Developer'];
+      let currentIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      
+      function typeWriter() {
+        const currentText = texts[currentIndex];
+        
+        if (isDeleting) {
+          rotatingText.textContent = currentText.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          rotatingText.textContent = currentText.substring(0, charIndex + 1);
+          charIndex++;
         }
-      };
-
-      // Start typing animation when hero section is visible
-      const heroObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setTimeout(typeWriter, 500);
-            heroObserver.unobserve(entry.target);
-          }
-        });
-      });
-
-      heroObserver.observe(document.querySelector(".hero"));
+        
+        let typeSpeed = isDeleting ? 50 : 100;
+        
+        if (!isDeleting && charIndex === currentText.length) {
+          typeSpeed = 2000;
+          isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          currentIndex = (currentIndex + 1) % texts.length;
+          typeSpeed = 500;
+        }
+        
+        setTimeout(typeWriter, typeSpeed);
+      }
+      
+      setTimeout(typeWriter, 1000);
 
       // Performance optimization
       let ticking = false;
