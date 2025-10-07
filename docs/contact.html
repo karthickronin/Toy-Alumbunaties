@@ -100,18 +100,21 @@
             <div class="col-lg-8 mb-5" data-aos="fade-right">
                 <div class="contact-form">
                     <h3 class="mb-4">Book Your Event 🎉</h3>
-                    <form id="contactForm">
+                    <form action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                        <input type="hidden" name="access_key" value="305ed920-1632-4406-896b-dff5ecebe2ef">
+                        <input type="hidden" name="subject" value="New Booking Request from Toy Alumbunaties Website">
+                        <input type="hidden" name="from_name" value="Toy Alumbunaties Contact Form">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="parentName" class="form-label">Parent's Name *</label>
-                                    <input type="text" class="form-control" id="parentName" required>
+                                    <input type="text" class="form-control" id="parentName" name="parent_name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="childName" class="form-label">Child's Name *</label>
-                                    <input type="text" class="form-control" id="childName" required>
+                                    <input type="text" class="form-control" id="childName" name="child_name" required>
                                 </div>
                             </div>
                         </div>
@@ -120,13 +123,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="phone" class="form-label">Phone Number *</label>
-                                    <input type="tel" class="form-control" id="phone" required>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email">
+                                    <input type="email" class="form-control" id="email" name="email">
                                 </div>
                             </div>
                         </div>
@@ -135,13 +138,13 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="eventDate" class="form-label">Event Date *</label>
-                                    <input type="date" class="form-control" id="eventDate" required>
+                                    <input type="date" class="form-control" id="eventDate" name="event_date" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="eventTime" class="form-label">Preferred Time</label>
-                                    <input type="time" class="form-control" id="eventTime">
+                                    <input type="time" class="form-control" id="eventTime" name="event_time">
                                 </div>
                             </div>
                         </div>
@@ -150,7 +153,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="childAge" class="form-label">Child's Age</label>
-                                    <select class="form-select" id="childAge">
+                                    <select class="form-select" id="childAge" name="child_age">
                                         <option value="">Select Age</option>
                                         <option value="3-5">3-5 years</option>
                                         <option value="6-8">6-8 years</option>
@@ -162,7 +165,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="guestCount" class="form-label">Number of Kids</label>
-                                    <select class="form-select" id="guestCount">
+                                    <select class="form-select" id="guestCount" name="guest_count">
                                         <option value="">Select Count</option>
                                         <option value="5-10">5-10 kids</option>
                                         <option value="11-20">11-20 kids</option>
@@ -175,7 +178,7 @@
                         
                         <div class="form-group">
                             <label for="package" class="form-label">Preferred Package</label>
-                            <select class="form-select" id="package">
+                            <select class="form-select" id="package" name="package">
                                 <option value="">Select Package</option>
                                 <option value="silver">Silver Package (₹2,500)</option>
                                 <option value="gold">Gold Package (₹4,000)</option>
@@ -186,12 +189,12 @@
                         
                         <div class="form-group">
                             <label for="venue" class="form-label">Event Venue/Address</label>
-                            <textarea class="form-control" id="venue" rows="2" placeholder="Please provide the event location"></textarea>
+                            <textarea class="form-control" id="venue" name="venue" rows="2" placeholder="Please provide the event location"></textarea>
                         </div>
                         
                         <div class="form-group">
                             <label for="message" class="form-label">Special Requests or Message</label>
-                            <textarea class="form-control" id="message" rows="4" placeholder="Tell us about any special themes, preferences, or requirements for your event"></textarea>
+                            <textarea class="form-control" id="message" name="message" rows="4" placeholder="Tell us about any special themes, preferences, or requirements for your event"></textarea>
                         </div>
                         
                         <button type="submit" class="btn btn-primary btn-lg">
@@ -394,51 +397,69 @@
         }
       });
 
-      // Contact form handling
+      // Contact form handling with Web3Forms
       document.getElementById('contactForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form data
-        const formData = {
-          parentName: document.getElementById('parentName').value,
-          childName: document.getElementById('childName').value,
-          phone: document.getElementById('phone').value,
-          email: document.getElementById('email').value,
-          eventDate: document.getElementById('eventDate').value,
-          eventTime: document.getElementById('eventTime').value,
-          childAge: document.getElementById('childAge').value,
-          guestCount: document.getElementById('guestCount').value,
-          package: document.getElementById('package').value,
-          venue: document.getElementById('venue').value,
-          message: document.getElementById('message').value
-        };
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
         
-        // Create WhatsApp message
-        const whatsappMessage = `Hi! I'd like to book Toy Alumbunaties for my child's event.
+        // Show loading state
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+        submitButton.disabled = true;
+        
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show success message
+            alert('🎉 Thank you! Your booking request has been sent successfully. We will contact you within 2-4 hours!');
+            form.reset();
+            
+            // Also create WhatsApp backup option
+            const formDataObj = Object.fromEntries(formData);
+            const whatsappMessage = `Hi! I'd like to book Toy Alumbunaties for my child's event.
 
 *Event Details:*
-- Parent: ${formData.parentName}
-- Child: ${formData.childName}
-- Phone: ${formData.phone}
-- Email: ${formData.email}
-- Date: ${formData.eventDate}
-- Time: ${formData.eventTime}
-- Child's Age: ${formData.childAge}
-- Number of Kids: ${formData.guestCount}
-- Package: ${formData.package}
-- Venue: ${formData.venue}
+- Parent: ${formDataObj.parent_name}
+- Child: ${formDataObj.child_name}
+- Phone: ${formDataObj.phone}
+- Email: ${formDataObj.email}
+- Date: ${formDataObj.event_date}
+- Time: ${formDataObj.event_time}
+- Child's Age: ${formDataObj.child_age}
+- Number of Kids: ${formDataObj.guest_count}
+- Package: ${formDataObj.package}
+- Venue: ${formDataObj.venue}
 
 *Message:*
-${formData.message}
+${formDataObj.message}
 
 Please let me know the availability and next steps!`;
-        
-        // Open WhatsApp with the message
-        const whatsappURL = `https://wa.me/919360895326?text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(whatsappURL, '_blank');
-        
-        // Show success message
-        alert('Your booking request has been prepared! You will be redirected to WhatsApp to send it to us.');
+            
+            // Optional: Open WhatsApp as backup
+            if (confirm('Would you also like to send this request via WhatsApp for faster response?')) {
+              const whatsappURL = `https://wa.me/919360895326?text=${encodeURIComponent(whatsappMessage)}`;
+              window.open(whatsappURL, '_blank');
+            }
+          } else {
+            throw new Error('Form submission failed');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('❌ Sorry, there was an error sending your message. Please try calling us directly at 9360895326.');
+        })
+        .finally(() => {
+          // Reset button state
+          submitButton.innerHTML = originalText;
+          submitButton.disabled = false;
+        });
       });
     </script>
   </body>

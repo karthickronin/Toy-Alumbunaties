@@ -72,7 +72,7 @@
                         {% endfor %}
                     {% endif %}
                     
-                    <form method="post">
+                    <form method="post" id="djangoContactForm">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
@@ -121,6 +121,10 @@
                         
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                        
+                        <button type="button" class="btn btn-outline-primary btn-lg ms-2" onclick="sendViaWeb3Forms(event)">
+                            <i class="fas fa-cloud me-2"></i>Send via Web3Forms
                         </button>
                     </form>
                 </div>
@@ -273,4 +277,57 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Web3Forms integration for Django contact form
+function sendViaWeb3Forms(event) {
+    const form = document.getElementById('djangoContactForm');
+    const formData = new FormData();
+    
+    // Add Web3Forms required fields
+    formData.append('access_key', '305ed920-1632-4406-896b-dff5ecebe2ef');
+    formData.append('subject', 'New Contact from Toy Alumbunaties Django Site');
+    formData.append('from_name', 'Toy Alumbunaties Django Contact Form');
+    
+    // Add form fields
+    formData.append('name', document.getElementById('name').value);
+    formData.append('email', document.getElementById('email').value);
+    formData.append('phone', document.getElementById('phone').value);
+    formData.append('event_date', document.getElementById('event_date').value);
+    formData.append('event_type', document.getElementById('event_type').options[document.getElementById('event_type').selectedIndex].text);
+    formData.append('message', document.getElementById('message').value);
+    
+    const submitButton = event.target;
+    const originalText = submitButton.innerHTML;
+    
+    // Show loading state
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    submitButton.disabled = true;
+    
+    fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('🎉 Thank you! Your message has been sent successfully via Web3Forms. We will contact you soon!');
+            form.reset();
+        } else {
+            throw new Error('Web3Forms submission failed');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Sorry, there was an error sending your message via Web3Forms. Please try the regular form or call us directly.');
+    })
+    .finally(() => {
+        // Reset button state
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+    });
+}
+</script>
 {% endblock %}
