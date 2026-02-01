@@ -34,11 +34,25 @@
     <link href="assets/css/custom.css" rel="stylesheet">
     <style>
 
-        .brand-text {
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: transparent !important;
+        z-index: 1000;
+    }
+    
+    .inner-header {
+        background: transparent !important;
+    }
+    
+    .brand-text {
         font-family: 'Dancing Script', cursive;
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 700;
-        color: #d43030;
+        /* color: #d43030; */
+        color: #fff;
         text-decoration: none;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         margin-left: 10px;
@@ -46,6 +60,11 @@
     }
 
     /* Video Background Styles */
+    .main {
+        height: 100vh;
+        position: relative;
+    }
+    
     .hero-video-container {
         position: absolute;
         top: 0;
@@ -128,6 +147,7 @@
     
     .img-area {
         position: relative;
+        height: 100vh;
     }
     
     @media (max-width: 768px) {
@@ -228,6 +248,13 @@
 
 <!-- Start Slider -->
 <section class="main">
+    <div class="hero-video-container">
+        <video id="heroVideo" class="hero-video" muted loop playsinline preload="auto">
+            <source src="static/teddy.mp4" type="video/mp4">
+            <source src="static/Teddy.webm" type="video/webm">
+            <img src="static/logo.png" alt="Toy Alumbunaties Background">
+        </video>
+    </div>
     <div class="container-fluid">
         <div class="row no-gutters">
             <div class="col-12 col-lg-3 align-items-center justify-content-end nav-icon d-none d-lg-flex">
@@ -253,27 +280,16 @@
                 </div>
             </div>
             <div class="col-12 col-lg-9 img-area">
-                <!-- Video Background -->
-                <div class="hero-video-container">
-                    <video id="heroVideo" class="hero-video" muted loop playsinline preload="auto">
-                        <source src="static/teddy.mp4" type="video/mp4">
-                        <source src="static/Teddy.webm" type="video/webm">
-                        <!-- Fallback image if video doesn't load -->
-                        <img src="static/logo.png" alt="Toy Alumbunaties Background">
-                    </video>
-                </div>
-                
-                <!-- Video Controls -->
-                <div class="video-controls">
-                    <button class="video-toggle-btn" id="videoToggle" aria-label="Play/Pause Video">
-                        <i class="fas fa-pause"></i>
-                    </button>
-                    <button class="video-sound-btn" id="soundToggle" aria-label="Mute/Unmute Video">
-                        <i class="fas fa-volume-mute"></i>
-                    </button>
-                </div>
             </div>
         </div>
+    </div>
+    <div class="video-controls">
+        <button class="video-toggle-btn" id="videoToggle" aria-label="Play/Pause Video">
+            <i class="fas fa-pause"></i>
+        </button>
+        <button class="video-sound-btn" id="soundToggle" aria-label="Mute/Unmute Video">
+            <i class="fas fa-volume-mute"></i>
+        </button>
     </div>
 </section>
 <!-- End Slider -->
@@ -327,7 +343,7 @@
                     <!-- Item-1 -->
                     <div class="item">
                         <div class="image-holder">
-                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Character Show">
+                            <img src="static\gallery\5721.jpg.jpeg" alt="Character Show">
                         </div>
                         <div class="work-detail row no-gutters">
                             <div class="col-12 col-md-6 col-lg-8 text-center text-md-left mb-3 mb-lg-0">
