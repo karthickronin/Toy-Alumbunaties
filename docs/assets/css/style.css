@@ -135,8 +135,8 @@ a:focus {color: inherit}
 
 .btn-main:hover {
     color: #ffffff;
-    border-color: #ec3737;
-    background-color:#ec3737;
+    border-color: #d43030;
+    background-color:#d43030;
 }
 
 .btn-main-inverse{
@@ -154,8 +154,8 @@ a:focus {color: inherit}
 
 .btn-main-inverse:hover {
     color: #fff;
-    background-color:#ec3737;
-    border: solid 1px #ec3737;
+    background-color:#d43030;
+    border: solid 1px #d43030;
 }
 
 .btn-sec-inverse{
@@ -214,7 +214,7 @@ a:focus {color: inherit}
             background-image:unset;
             background-size: unset;
             background-position: unset;
-            color:#ec3737 !important;
+            color:#d43030 !important;
         }
     }
 }
